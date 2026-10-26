@@ -5,17 +5,17 @@
 /* Layout: social-feed shell — dark test strip, sticky white top bar with icon tabs, one 680px column of white cards on grey */
 :root{
   --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F0F2F5; --hover:#E4E8EC; --ink:#14202C; --muted:#5A6573; --line:#DCE1E7;
-  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --mark-tile:transparent; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
+  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --mark-tile:transparent; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
   --lb-bg:rgba(8,12,11,.97); --lb-ink:#FFFFFF; --lb-muted:#B8C2BF; --strip:#22282A; --strip-ink:#E9EEEC; --strip-muted:#A9B4B0; --strip-line:#465052; --strip-field:#30383A;
   --font:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
   --strip:#0A0D0C; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
   --strip:#0A0D0C; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;padding-block:0 40px}
@@ -121,10 +121,10 @@ h2{margin:0;font-size:20px;font-weight:700}
 
 /* profile */
 .profile{padding:0;overflow:hidden;gap:0}
-.cover{height:150px;background-color:var(--brand);background-image:radial-gradient(var(--brand-soft) 1.3px,transparent 1.6px);background-size:18px 18px}
-.prof-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:0 16px 16px;margin-top:-66px}
-.prof-av{position:relative}
-.prof-av .av{border:4px solid var(--surface)}
+.cover{height:150px;background-color:var(--cover);background-image:radial-gradient(var(--brand-soft) 1.3px,transparent 1.6px);background-size:18px 18px}
+.prof-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:0 16px 16px;margin-top:-71px}
+.prof-av{position:relative;padding:5px;border-radius:50%;background:linear-gradient(to bottom,var(--brass) 50%,var(--cover) 50%)}
+.prof-av .av{border:0;display:flex}
 .cam{position:absolute;right:2px;bottom:8px;width:38px;height:38px;border-radius:50%;background:var(--sunk);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid var(--surface)}
 .cam:hover{background:var(--hover)}
 .prof-name{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
@@ -161,6 +161,22 @@ h2{margin:0;font-size:20px;font-weight:700}
 .terms ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
 .check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--brand);padding:0}
+.notice.warn{background:var(--brass-soft);box-shadow:inset 0 0 0 1px var(--brass)}
+.notice .col-tight{display:flex;flex-direction:column;gap:6px;flex:1 1 200px;min-width:0}
+.notice .col-tight .btns{margin-top:4px}
+.notice .col-tight>*{flex:none}
+.notice{align-items:flex-start}
+.notice>svg{margin-top:2px}
+.notice.tip{font-size:13px}
+.bubble-wrap{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:85%}
+.bubble-wrap .bubble{max-width:100%}
+.warn-line{margin:0;font-size:12px;color:var(--warn);display:flex;gap:4px;align-items:flex-start}
+.warn-line svg{flex:none;margin-top:1px}
+.conn-actions{display:flex;gap:16px;flex-wrap:wrap}
+.reasons{display:flex;flex-direction:column;gap:8px}
+.intro{flex-direction:row;gap:12px;align-items:flex-start;background:var(--brand-soft);box-shadow:none}
+.intro>svg{flex:none;color:var(--brand);margin-top:2px}
+.intro .col-tight{display:flex;flex-direction:column;gap:4px;font-size:14px}
 /* photo gallery + viewer */
 .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (min-width:520px){.gal{grid-template-columns:repeat(5,minmax(0,1fr))}}
@@ -241,7 +257,7 @@ const saveSync=()=>{try{localStorage.setItem(SYNC_KEY,JSON.stringify(SY))}catch(
 const onClaude=/claude\.ai|claudeusercontent|claude\.site/.test(location.hostname);
 let syncMsg=SY.bin?"Not synced yet":"Not set up", pushTimer=null, syncing=false;
 const isOurs=d=>!!d&&(d.app==="keep-in-touch"||d.app==="keep-in-my-life");
-const payload=()=>({app:"keep-in-touch",v:1,users:S.users,picks:S.picks,decisions:S.decisions,confirms:S.confirms,messages:S.messages,gone:S.gone,removedAt:S.removedAt||{},coolClear:S.coolClear||0});
+const payload=()=>({app:"keep-in-touch",v:1,users:S.users,picks:S.picks,decisions:S.decisions,confirms:S.confirms,messages:S.messages,gone:S.gone,removedAt:S.removedAt||{},coolClear:S.coolClear||0,disconnected:S.disconnected||{},reports:S.reports||[]});
 async function binFetch(method,body){
   const url="https://api.jsonbin.io/v3/b/"+encodeURIComponent(SY.bin.trim())+(method==="GET"?"/latest":"");
   const go=hdr=>fetch(url,{method,headers:{"Content-Type":"application/json","X-Bin-Meta":"false",[hdr]:SY.key.trim()},body:body?JSON.stringify(body):undefined});
@@ -282,16 +298,19 @@ const lastSim=(a,b)=>!!a&&!!b&&lev(a,b)<=(Math.max(a.length,b.length)>=6?2:1);
 function namesOf(u){const cur=parts(u.name);const out=[u.name];(u.past||[]).forEach(p=>{const pp=parts(p);out.push(pp.last?p:(cur.first+" "+p));});return out;}
 function nameMatch(name,u){const a=parts(name);return namesOf(u).some(n=>{const b=parts(n);return firstSim(a.first,b.first)&&(a.last?lastSim(a.last,b.last):true);});}
 const fullSim=(x,y)=>{const a=parts(x),b=parts(y);return firstSim(a.first,b.first)&&lastSim(a.last,b.last);};
-const GENERIC=new Set(["the","of","and","high","school","secondary","collegiate","college","university","public","elementary","ci","ss","hs","academy","institute","inc","ltd","co","company","club","church","street","st"]);
+const GENERIC=new Set(["the","of","and","high","school","secondary","collegiate","college","university","public","elementary","ci","ss","hs","academy","institute","inc","ltd","co","company","club","church","street","st","grade","class","team","program","programme","department","dept","campus","office","building","centre","center","store","plant","floor","year","years"]);
 function placeMatch(x,y){const tx=norm(x).split(/\s+/).filter(Boolean),ty=norm(y).split(/\s+/).filter(Boolean);
   const sx=tx.filter(t=>!GENERIC.has(t)&&t.length>2),sy=ty.filter(t=>!GENERIC.has(t)&&t.length>2);
-  if(!sx.length||!sy.length)return tx.join(" ")===ty.join(" ");
+  if(!sx.length||!sy.length){const raw=v=>String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();return !!raw(x)&&raw(x)===raw(y);}
   return sx.some(a=>sy.some(b=>a===b||(Math.min(a.length,b.length)>=5&&lev(a,b)<=1)));}
 const yearsOverlap=(a1,a2,b1,b2)=>a1-2<=b2&&b1-2<=a2;
 const CITY_ALIAS={toronto:["etobicoke","scarborough","northyork","eastyork","york","gta"]};
 const cityKey=c=>{const n=norm(c).replace(/\b(city|of|the|on|ont|ontario|canada)\b/g," ").replace(/\s+/g,"");for(const [k,v] of Object.entries(CITY_ALIAS))if(n===k||v.includes(n))return k;return n;};
 function cityMatch(a,b){const x=cityKey(a),y=cityKey(b);if(!x||!y)return false;return x===y||(Math.min(x.length,y.length)>=5&&lev(x,y)<=1);}
-const histEntry=(pick,u)=>(u.history||[]).find(h=>placeMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&yearsOverlap(+pick.from,+pick.to,+h.from,+h.to));
+const MAX_KW=5;
+const placeParts=p=>String(p||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,MAX_KW);
+const placesMatch=(a,b)=>placeParts(a).some(x=>placeParts(b).some(y=>placeMatch(x,y)));
+const histEntry=(pick,u)=>(u.history||[]).find(h=>placesMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&yearsOverlap(+pick.from,+pick.to,+h.from,+h.to));
 function blockedBetween(a,b){const hit=(x,y)=>(x.blocked||[]).includes(y.id)||(x.never||[]).some(n=>namesOf(y).some(m=>fullSim(n,m)));return hit(a,b)||hit(b,a);}
 function candidates(pick){const o=S.users[pick.owner];if(!o||!o.joined||!pickReady(pick,o))return[];
   return Object.values(S.users).filter(u=>u.id!==o.id&&u.joined&&!u.paused&&nameMatch(pick.name,u)&&histEntry(pick,u)&&!blockedBetween(o,u));}
@@ -303,7 +322,7 @@ const pairKey=(a,b)=>[a,b].sort().join("~");
 function connectionsOf(uid){const map={};
   for(const p of S.picks)for(const c of candidates(p)){const k=p.id+"|"+c.id;
     if(p.owner!==uid&&c.id!==uid)continue;
-    const other=p.owner===uid?c.id:p.owner;const pk=pairKey(uid,other);
+    const other=p.owner===uid?c.id:p.owner;const pk=pairKey(uid,other);if(S.disconnected&&S.disconnected[pk])continue;
     if(isMutual(p,c.id))map[pk]=map[pk]||{other,how:"mutual",place:(histEntry(p,c)||{}).place};
     else if(S.decisions[k]==="accepted"&&S.confirms[k]==="yes")map[pk]=map[pk]||{other,how:"request",place:(histEntry(p,c)||{}).place};}
   return Object.entries(map).map(([pk,v])=>({pk,...v}));}
@@ -434,13 +453,14 @@ function strip(u){
   </div></div>`;}
 
 function footer(){return `<footer class="foot">
-  <p>Kit is a tool to help people who once knew each other reconnect. Whether you accept a connection, and anything that happens after, is your own choice and responsibility.</p>
+  <p>Kit is a tool for the first hello between people who once knew each other. Staying in touch, and anything that happens after you connect, is your own choice and responsibility.</p>
   <p><button class="link" data-tab="terms">Terms of use</button> · <button class="link" data-tab="terms" data-sec="t-safety">Safety tips</button> · <button class="link" data-tab="terms" data-sec="t-privacy">Privacy</button></p></footer>`;}
 
 function agreeGate(){const u=me();return `<div class="card">
   <h2 class="ct ct-wm">Before you start</h2>
   <ul class="guards">
     <li>${ic("users",18)}<span>Kit helps people who already knew each other reconnect. It isn't a dating or meeting service.</span></li>
+    <li>${ic("chat",18)}<span>Kit is for the first hello only. Staying in touch afterwards happens outside Kit, in whatever way the two of you choose.</span></li>
     <li>${ic("shield",18)}<span>Kit doesn't verify identities or run background checks. Matches are based only on what people enter.</span></li>
     <li>${ic("check",18)}<span>You decide who to connect with. Anything you share, and any contact or meeting after a connection, is your own responsibility.</span></li>
     <li>${ic("lock",18)}<span>Don't use Kit to contact someone who has cut ties with you, or anyone a court order says you must not contact.</span></li></ul>
@@ -453,7 +473,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   <button class="link" data-tab="people">‹ Back</button>
   <h1 class="prof-name" style="text-align:left">Terms of use and safety</h1>
   <p class="fine">Last updated October 26, 2026 · Test version</p>
-  ${sec("t-what","What Kit is",`<p>Kit is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. Kit does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p>`)}
+  ${sec("t-what","What Kit is",`<p>Kit is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. Kit does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>Kit is for the first contact only. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside Kit.</p>`)}
   ${sec("t-resp","Your choices are your responsibility",`<ul>
     <li>You decide whether to send a request, accept one, or confirm a match. Kit never connects anyone without both people saying yes.</li>
     <li>Any messages, sharing of personal details, calls, meetings or relationships that follow a connection are solely between the people involved, and at their own risk.</li>
@@ -520,11 +540,12 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
     ${!hasPhoto(u)?photoNotice("Add a profile photo so people can see who's reaching out. Your list isn't sent until you do.","Add photo"):""}
     ${open?`<div class="compose-form">
       <label class="f" for="np_name">Name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
-      <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="School, job, team, street"></label>
+      <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="e.g. Humber College, film program"></label>
         <label class="f" for="np_city">City or town<input id="np_city" value="${esc(d.city)}" placeholder="e.g. Toronto"></label></div>
+      <p class="fine">Add other names or details for the place, separated by commas (up to ${MAX_KW}), like the school's nickname, a campus, a team or a department. Only one has to match.</p>
       <div class="grid2"><label class="f" for="np_from">From<input id="np_from" type="number" inputmode="numeric" value="${esc(d.from)}" placeholder="1985" min="1930" max="2026"></label>
-        <label class="f" for="np_to">To<input id="np_to" type="number" inputmode="numeric" value="${esc(d.to)}" placeholder="1989" min="1930" max="2026"></label></div>
-      <p class="fine">Up to ${MAX_SPAN} years. Pick the years you're most sure of.</p>
+        <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" type="number" inputmode="numeric" value="${esc(d.to)}" placeholder="1989" min="1930" max="2026"></label></div>
+      <p class="fine">From and To can be at most ${MAX_SPAN} years apart, so pick the years you're most sure of.</p>
       ${S.err?`<p class="err">${esc(S.err)}</p>`:""}
       <div class="btns"><button class="primary" data-act="addPick" ${used>=MAX_PICKS?"disabled":""}>Add to my list</button><button class="grey" data-act="compose">Cancel</button></div></div>`:""}
     <div class="divider"></div>
@@ -561,18 +582,50 @@ function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
     <div class="toggle"><p class="fine">Only you can see this. They're never told if you choose Not now or Block.</p><button class="link warn" data-act="block" data-id="${esc(o.id)}">Block</button></div></article>`;}).join("");
   return h;}
 
+const CHECKS=[
+  ["phone","a phone number",/(\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/],
+  ["email","an email address",/[^\s@]+@[^\s@]+\.[a-z]{2,}/i],
+  ["address","what looks like a home address",/\b\d{1,5}\s+(?:[a-z]+\s){0,3}(?:st|street|ave|avenue|rd|road|blvd|boulevard|dr|drive|cres|crescent|ct|court|way|lane|ln|pl|place|terrace|pkwy|parkway|hwy|highway)\b|\b[a-z]\d[a-z][ -]?\d[a-z]\d\b/i],
+  ["money","money",/\b(?:e-?transfers?|send (?:me )?money|wire (?:me|transfer)|gift ?cards?|bitcoin|crypto|bank (?:account|details|info)|paypal|venmo|cash ?app|western union|loan|lend me|need money)\b|\$\s?\d/i]];
+const detect=t=>CHECKS.filter(([,,re])=>re.test(t));
+const listWords=a=>a.length<2?a[0]:a.slice(0,-1).join(", ")+" and "+a[a.length-1];
+
 function connections(){const u=me();const cs=connectionsOf(u.id);
-  if(!cs.length)return `<div class="card empty">${ic("chat",32)}<b style="color:var(--ink)">No reconnections yet</b><span>They'll appear here once both of you say yes.</span></div>`;
-  return cs.map(c=>{const o=S.users[c.other];const th=S.messages[c.pk]||[];return `<article class="card${c.how==="mutual"?" glow":""}">
+  const flash=S.flash?`<div class="notice">${ic("check",18)}<span>${esc(S.flash)}</span></div>`:"";
+  if(!cs.length)return flash+`<div class="card empty">${ic("chat",32)}<b style="color:var(--ink)">No reconnections yet</b><span>They'll appear here once both of you say yes.</span></div>`;
+  const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>Kit is for the first hello</b>
+    <span>Use these messages to reintroduce yourselves and make sure it's really them. Kit isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
+  return flash+intro+cs.map(c=>{const o=S.users[c.other];const th=S.messages[c.pk]||[];const pend=S.pendingSend&&S.pendingSend.pk===c.pk?S.pendingSend:null;
+    const panel=S.connPanel&&S.connPanel.pk===c.pk?S.connPanel.kind:"";const F=firstName(o)||"them";
+    return `<article class="card${c.how==="mutual"?" glow":""}">
     <div class="post-head">${av(o,44)}<div class="who"><b>${esc(o.name)}</b><span class="meta">${c.how==="mutual"?"You picked each other":"Reconnected"}${c.place?" · "+esc(c.place):""}</span></div>${c.how==="mutual"?`<span class="status s-conn">Mutual</span>`:""}</div>
     ${thumbs(o)}
     <div class="divider"></div>
-    ${th.length?`<div class="comments">${th.map(m=>{const a=S.users[m.from]||{name:"Someone",hue:0};return `<div class="cmt">${av(a,32)}<div class="bubble"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
-    <div class="cmt-input">${av(u,32)}<div class="pill-input"><input id="m_${esc(c.pk)}" placeholder="Write a message…" aria-label="Message ${esc(o.name)}" maxlength="400"><button class="icon-btn" data-act="send" data-pk="${esc(c.pk)}" aria-label="Send">${ic("send",18)}</button></div></div>
-    <button class="link" data-act="block" data-id="${esc(o.id)}">Block or report</button></article>`;}).join("");}
+    ${(S.tipOff||{})[c.pk]?"":`<div class="notice tip">${ic("shield",18)}<span>This chat is just for reconnecting. Take your time, and when you're both comfortable, swap the contact details you choose and keep in touch outside Kit. Never send money or gift cards.</span><button class="link" data-act="dismissTip" data-pk="${esc(c.pk)}">Got it</button></div>`}
+    ${th.length?`<div class="comments">${th.map(m=>{const a=S.users[m.from]||{name:"Someone",hue:0};const mine=m.from===u.id;const money=!mine&&CHECKS[3][2].test(m.text);
+      return `<div class="cmt">${av(a,32)}<div class="bubble-wrap"><div class="bubble"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div>${money?`<p class="warn-line">${ic("shield",14)}This message mentions money. Kit will never ask you for money, and neither should anyone you reconnect with.</p>`:""}</div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
+    ${pend?`<div class="notice warn">${ic("shield",18)}<div class="col-tight"><b>Before you send</b>
+        <span>This message includes ${esc(listWords(pend.kinds))}. ${pend.kinds.includes("money")?"Never send money, gift cards or bank details to anyone you reconnect with, even someone you used to know. ":"Sharing contact details is how you'll stay in touch after Kit, so only send them when you're sure it's the person you knew. "}Once it's sent, it can't be taken back.</span>
+        <div class="btns"><button class="primary" data-act="cancelSend" data-pk="${esc(c.pk)}">Edit message</button><button class="grey" data-act="confirmSend" data-pk="${esc(c.pk)}">Send anyway</button></div></div></div>`
+      :`<div class="cmt-input">${av(u,32)}<div class="pill-input"><input id="m_${esc(c.pk)}" value="${esc((S.msgDraft||{})[c.pk]||"")}" placeholder="Write a message…" aria-label="Message ${esc(o.name)}" maxlength="400"><button class="icon-btn" data-act="send" data-pk="${esc(c.pk)}" aria-label="Send">${ic("send",18)}</button></div></div>`}
+    ${panel==="disconnect"?`<div class="notice">${ic("x",18)}<div class="col-tight"><b>Disconnect from ${esc(F)}?</b>
+        <span>This ends the connection for both of you. The conversation and each other's photos disappear. ${esc(F)} isn't sent a notice, but you'll no longer appear in their Reconnected list. This can't be undone.</span>
+        <div class="btns"><button class="primary" data-act="closePanel">Keep connection</button><button class="grey" data-act="disconnect" data-pk="${esc(c.pk)}">Disconnect</button></div></div></div>`:""}
+    ${panel==="block"?`<div class="notice">${ic("lock",18)}<div class="col-tight"><b>Block ${esc(F)}?</b>
+        <span>You'll disappear from each other's lists and requests, and they can never reach you through Kit again. They aren't told. You can unblock later from your Profile.</span>
+        <div class="btns"><button class="primary" data-act="closePanel">Cancel</button><button class="danger-btn" data-act="block" data-id="${esc(o.id)}">Block</button></div></div></div>`:""}
+    ${panel==="report"?`<div class="notice">${ic("shield",18)}<div class="col-tight"><b>Report ${esc(F)}</b>
+        <span>What's happening? ${esc(F)} won't know who reported them.</span>
+        <div class="reasons">${["Harassment or threats","Asking for money","Pretending to be someone else","Inappropriate messages or photos","I don't know this person","Something else"].map((r,i)=>`<label class="check" for="rr_${i}"><input type="radio" name="rep_reason" id="rr_${i}" value="${esc(r)}"><span>${r}</span></label>`).join("")}</div>
+        <label class="f" for="rep_details">Details (optional)<textarea id="rep_details" maxlength="500" placeholder="What happened?"></textarea></label>
+        <label class="check" for="rep_block"><input type="checkbox" id="rep_block" checked><span>Also block ${esc(F)}</span></label>
+        ${S.repErr?`<p class="err">${esc(S.repErr)}</p>`:""}
+        <p class="fine">If you're in danger, call 911.</p>
+        <div class="btns"><button class="primary" data-act="report" data-id="${esc(o.id)}" data-pk="${esc(c.pk)}">Send report</button><button class="grey" data-act="closePanel">Cancel</button></div></div></div>`:""}
+    ${panel?"":`<div class="conn-actions"><button class="link" data-act="connPanel" data-kind="disconnect" data-pk="${esc(c.pk)}">Disconnect</button><button class="link" data-act="connPanel" data-kind="block" data-pk="${esc(c.pk)}">Block</button><button class="link warn" data-act="connPanel" data-kind="report" data-pk="${esc(c.pk)}">Report</button></div>`}</article>`;}).join("");}
 
 function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
-  return `<section class="card profile"><div class="cover"><svg class="net" viewBox="0 0 680 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g style="stroke:var(--brass)" stroke-width="3" stroke-linecap="round"><line x1="340" y1="150" x2="340" y2="36"/><line x1="340" y1="150" x2="402" y2="42"/><line x1="340" y1="150" x2="462" y2="64"/><line x1="340" y1="150" x2="506" y2="110"/><line x1="340" y1="150" x2="278" y2="42"/><line x1="340" y1="150" x2="218" y2="64"/><line x1="340" y1="150" x2="174" y2="110"/></g><g style="fill:var(--brand);stroke:var(--brass)" stroke-width="4"><circle cx="340" cy="36" r="8.5"/><circle cx="402" cy="42" r="8.5"/><circle cx="462" cy="64" r="8.5"/><circle cx="506" cy="110" r="8.5"/><circle cx="278" cy="42" r="8.5"/><circle cx="218" cy="64" r="8.5"/><circle cx="174" cy="110" r="8.5"/></g></svg></div>
+  return `<section class="card profile"><div class="cover"><svg class="net" viewBox="0 0 680 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g style="stroke:var(--brass)" stroke-width="3" stroke-linecap="round"><line x1="340.0" y1="79.0" x2="340" y2="36"/><line x1="375.3" y1="88.4" x2="402" y2="42"/><line x1="398.0" y1="109.1" x2="462" y2="64"/><line x1="409.0" y1="133.4" x2="506" y2="110"/><line x1="304.7" y1="88.4" x2="278" y2="42"/><line x1="282.0" y1="109.1" x2="218" y2="64"/><line x1="271.0" y1="133.4" x2="174" y2="110"/></g><g style="fill:var(--cover);stroke:var(--brass)" stroke-width="4"><circle cx="340" cy="36" r="8.5"/><circle cx="402" cy="42" r="8.5"/><circle cx="462" cy="64" r="8.5"/><circle cx="506" cy="110" r="8.5"/><circle cx="278" cy="42" r="8.5"/><circle cx="218" cy="64" r="8.5"/><circle cx="174" cy="110" r="8.5"/></g></svg></div>
     <div class="prof-main">
       <div class="prof-av">${av(u,132)}<label class="cam" for="me_photo" aria-label="Choose a photo">${ic("camera",18)}</label><input id="me_photo" type="file" accept="image/*" hidden></div>
       <h1 class="prof-name">${esc(u.name||"New person")}</h1>
@@ -585,13 +638,13 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
 
   <div class="card"><h2 class="ct">Where people knew you</h2>
     <div class="hist">${(u.history||[]).map((h,i)=>`<div class="hist-row">
-      <label class="f" for="h_place_${i}">Place<input id="h_place_${i}" data-h="${i}" data-f="place" value="${esc(h.place)}" placeholder="School, job, team"></label>
+      <label class="f" for="h_place_${i}">Place<input id="h_place_${i}" data-h="${i}" data-f="place" value="${esc(h.place)}" placeholder="e.g. Humber College, film program"></label>
       <label class="f hc" for="h_city_${i}">City or town<input id="h_city_${i}" data-h="${i}" data-f="city" value="${esc(h.city)}" placeholder="e.g. Toronto"></label>
       <label class="f" for="h_from_${i}">From<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" value="${esc(h.from)}"></label>
       <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" type="number" value="${esc(h.to)}"></label>
       <button class="x" data-act="delHist" data-i="${i}" aria-label="Remove this place">×</button></div>`).join("")}</div>
     <button class="grey" data-act="addHist" style="align-self:flex-start">Add a place</button>
-    <p class="fine">Only people who list the same place, the same city and overlapping years can ever reach you.</p></div>
+    <p class="fine">For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city and years match too.</p></div>
 
   <div class="card"><h2 class="ct">Your names</h2>
     <label class="f" for="me_name">Full name<input id="me_name" value="${esc(u.name)}" placeholder="First and last name"></label>
@@ -612,6 +665,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
        "Every request shows the sender's photo, so you always know who's asking.",
        "The person being found sees the request first and decides.",
        "Saying no or blocking is silent. The other person just keeps waiting.",
+       "Kit is for the first hello only. You choose if and how to keep in touch afterwards.",
        "Your photo reaches a requester only after you say yes.",
        `Up to ${MAX_GAL} extra photos, seen only by people you've reconnected with.`,
        `Up to ${MAX_PICKS} people per list, and removed names lock their spot for 30 days.`,
@@ -654,6 +708,7 @@ function act(a,el){const u=me();
     const locked=lockedSlots(u.id);
     if(!parts(name).first)S.err="Add the name you knew them by.";
     else if(!place)S.err="Add where you knew them. It's how we keep names private.";
+    else if(place.split(",").filter(x=>x.trim()).length>MAX_KW)S.err=`Use up to ${MAX_KW} names or details for the place, separated by commas.`;
     else if(!city)S.err="Add the city or town. It's the second detail that has to match.";
     else if(!f||f<1930||t>2026)S.err="Add roughly which years, like 1985 to 1989.";
     else if(t-f>MAX_SPAN)S.err=`Keep it to ${MAX_SPAN} years or less. Pick the years you're most sure of.`;
@@ -668,9 +723,23 @@ function act(a,el){const u=me();
   else if(a==="clearCool"){S.coolClear=Date.now();}
   else if(a==="decide"){S.decisions[el.dataset.k]=el.dataset.v;}
   else if(a==="confirm"){S.confirms[el.dataset.k]=el.dataset.v;}
-  else if(a==="block"){if(!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);}
+  else if(a==="block"){S.connPanel=null;S.flash="Blocked. They won't be told.";if(!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);}
   else if(a==="unblock"){u.blocked=u.blocked.filter(x=>x!==el.dataset.id);}
-  else if(a==="send"){const pk=el.dataset.pk,inp=document.getElementById("m_"+pk);const text=(inp&&inp.value||"").trim();if(text){(S.messages[pk]=S.messages[pk]||[]).push({from:u.id,text,ts:Date.now()});}}
+  else if(a==="send"){const pk=el.dataset.pk,inp=document.getElementById("m_"+pk);const text=(inp&&inp.value||"").trim();S.msgDraft=S.msgDraft||{};
+    if(text){const kinds=detect(text).map(c=>c[1]);
+      if(kinds.length){S.pendingSend={pk,text,kinds};S.msgDraft[pk]=text;save();render();return;}
+      (S.messages[pk]=S.messages[pk]||[]).push({from:u.id,text,ts:Date.now()});S.msgDraft[pk]="";}}
+  else if(a==="confirmSend"){const p=S.pendingSend;if(p){(S.messages[p.pk]=S.messages[p.pk]||[]).push({from:u.id,text:p.text,ts:Date.now()});S.msgDraft=S.msgDraft||{};S.msgDraft[p.pk]="";}S.pendingSend=null;}
+  else if(a==="cancelSend"){S.pendingSend=null;save();render();const i=document.getElementById("m_"+el.dataset.pk);if(i){i.focus();}return;}
+  else if(a==="dismissTip"){S.tipOff=S.tipOff||{};S.tipOff[el.dataset.pk]=1;save();render();return;}
+  else if(a==="connPanel"){S.connPanel={pk:el.dataset.pk,kind:el.dataset.kind};S.repErr="";S.flash="";save();render();return;}
+  else if(a==="closePanel"){S.connPanel=null;S.repErr="";save();render();return;}
+  else if(a==="disconnect"){S.disconnected=S.disconnected||{};S.disconnected[el.dataset.pk]={by:u.id,at:Date.now()};S.connPanel=null;S.flash="Disconnected. They won't be notified.";}
+  else if(a==="report"){const r=document.querySelector('input[name="rep_reason"]:checked');
+    if(!r){S.repErr="Choose what's happening so the report can be reviewed.";save();render();return;}
+    S.reports=S.reports||[];S.reports.push({id:"r"+Date.now().toString(36),by:u.id,about:el.dataset.id,reason:r.value,details:val("rep_details"),at:Date.now()});
+    const bl=document.getElementById("rep_block");if(bl&&bl.checked&&!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);
+    S.connPanel=null;S.repErr="";S.flash=bl&&bl.checked?"Thanks. Your report was saved and they've been blocked.":"Thanks. Your report was saved for review.";}
   else if(a==="addHist"){u.history.push({place:"",city:"",from:1985,to:1990});}
   else if(a==="delHist"){u.history.splice(+el.dataset.i,1);}
   else if(a==="clearPhoto"){u.photo="";}
@@ -687,6 +756,8 @@ function merge(d){
   const g=d.gone||{};
   S.removedAt=S.removedAt||{};for(const k in d.removedAt||{})if(!(k in S.removedAt))S.removedAt[k]=d.removedAt[k];
   S.coolClear=Math.max(S.coolClear||0,+d.coolClear||0);
+  S.disconnected=S.disconnected||{};for(const k in d.disconnected||{})if(!(k in S.disconnected))S.disconnected[k]=d.disconnected[k];
+  S.reports=S.reports||[];const rk=new Set(S.reports.map(r=>r.id));for(const r of d.reports||[])if(r&&r.id&&!rk.has(r.id))S.reports.push(r);
   for(const p of d.picks||[]){const l=p&&S.picks.find(x=>x.id===p.id);if(l&&!l.city&&p.city)l.city=p.city;}
   for(const id of g.users||[])if(!S.gone.users.includes(id))S.gone.users.push(id);
   for(const id of g.picks||[])if(!S.gone.picks.includes(id))S.gone.picks.push(id);
@@ -706,7 +777,7 @@ function merge(d){
   return [nu,np];}
 
 document.addEventListener("click",e=>{const t=e.target.closest("[data-act],[data-tab]");if(!t)return;
-  if(t.dataset.tab){S.tab=t.dataset.tab;S.err="";save();render();const sec=t.dataset.sec&&document.getElementById(t.dataset.sec);if(sec)sec.scrollIntoView();else if(t.dataset.tab==="terms")window.scrollTo(0,0);return;}
+  if(t.dataset.tab){S.tab=t.dataset.tab;S.err="";S.flash="";S.connPanel=null;S.pendingSend=null;save();render();const sec=t.dataset.sec&&document.getElementById(t.dataset.sec);if(sec)sec.scrollIntoView();else if(t.dataset.tab==="terms")window.scrollTo(0,0);return;}
   act(t.dataset.act,t);});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("m_")){const b=e.target.parentElement.querySelector("[data-act=send]");if(b)b.click();}});
 document.addEventListener("change",e=>{const t=e.target,u=me();
