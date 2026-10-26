@@ -177,6 +177,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .intro{flex-direction:row;gap:12px;align-items:flex-start;background:var(--brand-soft);box-shadow:none}
 .intro>svg{flex:none;color:var(--brand);margin-top:2px}
 .intro .col-tight{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.hist-miss{grid-column:1/-1;display:flex;gap:4px;align-items:center}
 /* photo gallery + viewer */
 .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (min-width:520px){.gal{grid-template-columns:repeat(5,minmax(0,1fr))}}
@@ -235,7 +236,7 @@ input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--b
 <script>
 /* ---------- data ---------- */
 const KEY="kiml.demo.v1";
-const blankPerson=(id,name,hue)=>({id,name,past:[],history:[{place:"",city:"",from:1985,to:1990}],joined:true,paused:false,never:[],blocked:[],photo:"",hue});
+const blankPerson=(id,name,hue)=>({id,name,past:[],history:[{place:"",city:"",from:"",to:""}],joined:true,paused:false,never:[],blocked:[],photo:"",hue});
 const seed=()=>({
   current:"u_andrew", tab:"me", v:2,
   users:{u_andrew:blankPerson("u_andrew","Andrew B.",205),u_nicole:blankPerson("u_nicole","Nicole G.",330)},
@@ -310,7 +311,10 @@ function cityMatch(a,b){const x=cityKey(a),y=cityKey(b);if(!x||!y)return false;r
 const MAX_KW=5;
 const placeParts=p=>String(p||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,MAX_KW);
 const placesMatch=(a,b)=>placeParts(a).some(x=>placeParts(b).some(y=>placeMatch(x,y)));
-const histEntry=(pick,u)=>(u.history||[]).find(h=>placesMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&yearsOverlap(+pick.from,+pick.to,+h.from,+h.to));
+const yr=v=>{const n=parseInt(v,10);return Number.isFinite(n)?n:null;};
+const histReady=h=>!!(h&&String(h.place||"").trim()&&String(h.city||"").trim()&&(yr(h.from)!==null||yr(h.to)!==null));
+const histSpan=h=>{let a=yr(h.from),b=yr(h.to);if(a===null)a=b;if(b===null)b=a;return a<=b?[a,b]:[b,a];};
+const histEntry=(pick,u)=>(u.history||[]).filter(histReady).find(h=>placesMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&yearsOverlap(+pick.from,+pick.to,histSpan(h)[0],histSpan(h)[1]));
 function blockedBetween(a,b){const hit=(x,y)=>(x.blocked||[]).includes(y.id)||(x.never||[]).some(n=>namesOf(y).some(m=>fullSim(n,m)));return hit(a,b)||hit(b,a);}
 function candidates(pick){const o=S.users[pick.owner];if(!o||!o.joined||!pickReady(pick,o))return[];
   return Object.values(S.users).filter(u=>u.id!==o.id&&u.joined&&!u.paused&&nameMatch(pick.name,u)&&histEntry(pick,u)&&!blockedBetween(o,u));}
@@ -381,7 +385,7 @@ function migrate(){S.removedAt=S.removedAt||{};S.gone=S.gone||{users:[],picks:[]
   S.picks=S.picks.filter(p=>!S.gone.picks.includes(p.id)&&S.users[p.owner]);
   const a=S.users.u_andrew;
   if(a){if(a.name==="Andrew Novak")a.name="Andrew B.";a.past=(a.past||[]).filter(n=>n!=="Andy Novak");
-    a.history=(a.history||[]).filter(h=>!OLD_PLACES.includes(h.place));if(!a.history.length)a.history=[{place:"",city:"",from:1985,to:1990}];
+    a.history=(a.history||[]).filter(h=>!OLD_PLACES.includes(h.place));if(!a.history.length)a.history=[{place:"",city:"",from:"",to:""}];
     if(a.photo&&a.photo===samplePhoto(a.hue))a.photo="";}
   if((S.v||0)<2){if(!Object.values(S.users).some(u=>/^nicole/i.test(u.name||"")))S.users.u_nicole=blankPerson("u_nicole","Nicole G.",330);S.v=2;}
   if(!S.users[S.current])S.current=Object.keys(S.users)[0];}
@@ -537,6 +541,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
   const open=S.compose||!!S.err;const d=S.draft||{};const locked=lockedSlots(u.id);const used=slotsUsed(u.id);
   return `<div class="card">
     <div class="compose-row">${av(u)}<button class="pill" data-act="compose" aria-expanded="${open}">Who do you miss${F?", "+esc(F):""}?</button></div>
+    ${!(u.history||[]).some(histReady)?`<div class="notice">${ic("pin",18)}<span>Add at least one place with its city and years on your Profile, so people from your past can find you.</span><button class="grey" data-tab="me">Add a place</button></div>`:""}
     ${!hasPhoto(u)?photoNotice("Add a profile photo so people can see who's reaching out. Your list isn't sent until you do.","Add photo"):""}
     ${open?`<div class="compose-form">
       <label class="f" for="np_name">Name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
@@ -640,9 +645,9 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <div class="hist">${(u.history||[]).map((h,i)=>`<div class="hist-row">
       <label class="f" for="h_place_${i}">Place<input id="h_place_${i}" data-h="${i}" data-f="place" value="${esc(h.place)}" placeholder="e.g. Humber College, film program"></label>
       <label class="f hc" for="h_city_${i}">City or town<input id="h_city_${i}" data-h="${i}" data-f="city" value="${esc(h.city)}" placeholder="e.g. Toronto"></label>
-      <label class="f" for="h_from_${i}">From<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" value="${esc(h.from)}"></label>
-      <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" type="number" value="${esc(h.to)}"></label>
-      <button class="x" data-act="delHist" data-i="${i}" aria-label="Remove this place">×</button></div>`).join("")}</div>
+      <label class="f" for="h_from_${i}">From<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.from)}"></label>
+      <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.to)}"></label>
+      <button class="x" data-act="delHist" data-i="${i}" aria-label="Remove this place">×</button>${histReady(h)?"":`<p class="err hist-miss">${ic("pin",14)} Add ${[!String(h.place||"").trim()&&"a place",!String(h.city||"").trim()&&"a city",yr(h.from)===null&&yr(h.to)===null&&"years"].filter(Boolean).join(", ").replace(/, ([^,]*)$/," and $1")}. Nobody can find you here until it's filled in.</p>`}</div>`).join("")}</div>
     <button class="grey" data-act="addHist" style="align-self:flex-start">Add a place</button>
     <p class="fine">For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city and years match too.</p></div>
 
@@ -698,7 +703,7 @@ function act(a,el){const u=me();
     S.exportText=text;S.shareMsg="Copied. Paste it into a message to them.";
     try{navigator.clipboard.writeText(text).catch(()=>{S.shareMsg="Couldn't copy automatically. Select the text in the box and copy it.";render();});}catch(e){S.shareMsg="Couldn't copy automatically. Select the text in the box and copy it.";}}
   else if(a==="importData"){importText(val("imp"));}
-  else if(a==="addUser"){const id="u_"+Date.now().toString(36);S.users[id]={id,name:"",past:[],history:[{place:"",city:"",from:1985,to:1990}],joined:false,paused:false,never:[],blocked:[],photo:"",hue:Math.floor(Math.random()*360)};S.current=id;S.tab="me";}
+  else if(a==="addUser"){const id="u_"+Date.now().toString(36);S.users[id]={id,name:"",past:[],history:[{place:"",city:"",from:"",to:""}],joined:false,paused:false,never:[],blocked:[],photo:"",hue:Math.floor(Math.random()*360)};S.current=id;S.tab="me";}
   else if(a==="join"){u.joined=true;}
   else if(a==="leave"){u.joined=false;}
   else if(a==="pause"){u.paused=!u.paused;}
@@ -740,7 +745,7 @@ function act(a,el){const u=me();
     S.reports=S.reports||[];S.reports.push({id:"r"+Date.now().toString(36),by:u.id,about:el.dataset.id,reason:r.value,details:val("rep_details"),at:Date.now()});
     const bl=document.getElementById("rep_block");if(bl&&bl.checked&&!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);
     S.connPanel=null;S.repErr="";S.flash=bl&&bl.checked?"Thanks. Your report was saved and they've been blocked.":"Thanks. Your report was saved for review.";}
-  else if(a==="addHist"){u.history.push({place:"",city:"",from:1985,to:1990});}
+  else if(a==="addHist"){u.history.push({place:"",city:"",from:"",to:""});}
   else if(a==="delHist"){u.history.splice(+el.dataset.i,1);}
   else if(a==="clearPhoto"){u.photo="";}
   save();render();if(a!=="reset"&&a!=="toggleShare"&&a!=="copyData")schedulePush();}
@@ -787,7 +792,7 @@ document.addEventListener("change",e=>{const t=e.target,u=me();
   else if(t.id==="me_name"){u.name=t.value.trim();}
   else if(t.id==="me_past"){u.past=t.value.split(",").map(s=>s.trim()).filter(Boolean);}
   else if(t.id==="me_never"){u.never=t.value.split("\n").map(s=>s.trim()).filter(Boolean);}
-  else if(t.dataset.h!=null){const h=u.history[+t.dataset.h];h[t.dataset.f]=(t.dataset.f==="place"||t.dataset.f==="city")?t.value.trim():(parseInt(t.value)||h[t.dataset.f]);}
+  else if(t.dataset.h!=null){const h=u.history[+t.dataset.h];h[t.dataset.f]=(t.dataset.f==="place"||t.dataset.f==="city")?t.value.trim():(n=>Number.isFinite(n)&&n>=1900&&n<=2100?n:"")(parseInt(t.value,10));}
   else if(t.id==="me_photo"&&t.files[0]){openCrop(t.files[0]);return;}
   else return;
   save();render();if(t.id!=="who")schedulePush();});
