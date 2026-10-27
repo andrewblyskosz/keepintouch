@@ -53,7 +53,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .logo-mark{width:40px;height:40px;border-radius:10px;background:var(--mark-tile);padding:2px;display:block;flex:none}
 .bar-sub{font-size:13px;color:var(--bar-muted);padding-top:6px}
 .bar-me{margin-left:auto;background:transparent;padding:0;border-radius:50%;display:flex}
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
 .tabs button{background:transparent;color:var(--bar-muted);height:50px;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;border-radius:8px 8px 0 0;font-weight:600;font-size:14px}
 .tabs button:hover{background:var(--bar-hover)}
 .tabs button[aria-selected="true"]{color:var(--bar-brand)}
@@ -346,9 +346,9 @@ function connectionsOf(uid){const map={};
     else if(S.decisions[k]==="accepted"&&S.confirms[k]==="yes")map[pk]=map[pk]||{other,how:"request",place:(histEntry(p,c)||{}).place};}
   return Object.entries(map).map(([pk,v])=>({pk,...v}));}
 const connectedWith=(a,b)=>connectionsOf(a).some(c=>c.other===b);
-function inbox(uid){return [];const out=[];for(const p of S.picks){if(p.owner===uid)continue;const k=p.id+"|"+uid;
+function inbox(uid){const out=[];for(const p of S.picks){if(p.owner===uid)continue;const k=p.id+"|"+uid;
   if(pickTargets(p,uid)&&!isMutual(p,uid)&&!S.decisions[k]&&!connectedWith(uid,p.owner))out.push(p);}return out;}
-function toConfirm(uid){return [];const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id;
+function toConfirm(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id;
   if(S.decisions[k]==="accepted"&&!S.confirms[k]&&!isMutual(p,c.id))out.push({p,c});}return out;}
 function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(+p.to-+p.from>MAX_SPAN)return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
   const conn=cs.find(c=>connectedWith(p.owner,c.id));if(conn)return{cls:"s-conn",txt:"Connected with "+conn.name};
@@ -426,7 +426,7 @@ function thumbs(o){const g=galleryOf(o);if(!g.length)return "";const show=g.slic
   return `<div class="thumbs">${show.map((p,k)=>`<button class="thumb" data-act="viewPhotos" data-id="${esc(o.id)}" data-i="${k}" aria-label="Open photo ${k+1} of ${esc(o.name)}"><img src="${p}" alt="">${k===4&&g.length>5?`<span class="more">+${g.length-5}</span>`:""}</button>`).join("")}</div>`;}
 function galleryCard(u){const g=u.gallery||[];
   return `<div class="card"><div class="toggle"><h2 class="ct">Photos</h2><span class="fine">${g.length} of ${MAX_GAL}</span></div>
-    <p class="fine">Only people you've matched with can see these.</p>
+    <p class="fine">Only people you've reconnected with can see these. Requests show just your profile photo.</p>
     <div class="gal">${g.map((p,i)=>safePhoto(p)?`<div class="gal-item"><button class="gal-open" data-act="viewPhotos" data-id="${esc(u.id)}" data-i="${i}" aria-label="Open photo ${i+1}"><img src="${safePhoto(p)}" alt=""></button><button class="gal-del" data-act="delGal" data-i="${i}" aria-label="Remove photo ${i+1}">${ic("x",16)}</button></div>`:"").join("")}
       ${g.length<MAX_GAL?`<label class="gal-add" for="gal_add">${ic("plus",24)}<span>Add photos</span></label>`:""}</div>
     <input id="gal_add" type="file" accept="image/*" multiple hidden>
@@ -444,16 +444,17 @@ function viewer(){const v=S.viewing;if(!v)return "";const o=S.users[v.uid];const
 function render(){
   migrate();
   const u=me();
-  const tabs=[["me","Profile","user"],["people","People","users"],["connections","Reconnected","chat"]];
-  const views={people,connections,me:meTab};
-  if(S.tab==="requests")S.tab="connections";
+  const tabs=[["me","Profile","user"],["people","People","users"],["requests","Requests","bell"],["connections","Reconnected","chat"]];
+  const views={people,requests,connections,me:meTab};
+  
   const body=S.tab==="terms"?termsPage():S.tab==="example"?examplePage():(!u.agreed&&S.tab!=="me")?agreeGate():!u.joined&&S.tab!=="me"?notJoined():(views[S.tab]||people)();
+  const reqCount=(u.joined&&u.agreed)?inbox(u.id).length+toConfirm(u.id).length:0;
   const newCount=(u.joined&&u.agreed)?connectionsOf(u.id).filter(c=>!((S.seen||{})[u.id]||[]).includes(c.pk)).length:0;
   document.getElementById("app").innerHTML=`${strip(u)}
   <header class="bar"><div class="bar-in">
     <div class="bar-top">${LOGO()}<span class="bar-sub">Keep in Touch</span>
       <button class="bar-me" data-tab="me" aria-label="Your profile">${av(u,38)}</button></div>
-    <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
+    <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}${k==="requests"&&reqCount?`<span class="badge">${reqCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
   </div></header>
   <main class="main"><div class="col">${body}</div>${footer()}</main>${viewer()}`;
 }
@@ -471,7 +472,7 @@ function strip(u){
   <details><summary>How to test this together</summary><ol>
     <li>Pick yourself in "Viewing as" on your own phone: Andrew B. or Nicole G.</li>
     <li>On Profile, add a photo and the places, cities and years people knew you.</li>
-    <li>On People, add someone you miss. Nothing is shown to them. To test a match, list each other with a shared place, city and overlapping years.</li>
+    <li>On People, add someone you miss. They get a request with your name and photo. To test a match, list each other with a shared place, city and overlapping years.</li>
     <li>Turn on Sync setup on both phones so matches and messages reach each other.</li></ol></details>`:""}
   </div></div>`;}
 
@@ -525,7 +526,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   <p class="fine">Last updated October 26, 2026 · Test version</p>
   ${sec("t-what",`What ${KITW} is`,`<p>${KITW} is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. ${KITW} does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>${KITW} is for the first contact only. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside ${KITW}.</p>`)}
   ${sec("t-resp","Your choices are your responsibility",`<ul>
-    <li>${KITW} is completely discreet. Nobody is told who is looking for them. Two people are connected only when both have listed each other with a matching place, city and years.</li>
+    <li>${KITW} never connects anyone without both people agreeing. You decide whether to send a request or accept one, and only the person you're looking for ever sees your request.</li>
     <li>Any messages, sharing of personal details, calls, meetings or relationships that follow a connection are solely between the people involved, and at their own risk.</li>
     <li>${KITW} is not responsible for the conduct of any user, online or offline.</li></ul>`)}
   ${sec("t-rules",`Rules for using ${KITW}`,`<ul>
@@ -543,7 +544,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
     <li>If something feels off, trust that feeling. Use Block, and report the person.</li>
     <li>If you're in danger, call 911 or your local emergency number.</li></ul>`)}
   ${sec("t-privacy","Privacy",`<ul>
-    <li>Your list of people is never shown to anyone. Your photo is shown only to people you match with. Extra photos are shown only to people you've reconnected with.</li>
+    <li>Your list of people is never shown to anyone. Your photo is shown to the person you send a request to, and to people you connect with. Extra photos are shown only to people you've reconnected with.</li>
     <li>This test version stores information in your browser and, if sync is turned on, in a shared online file. It is not encrypted, so don't enter anything sensitive.</li>
     <li>You can remove your photos, places and list at any time, or turn off "Signed up" to stop being found.</li></ul>`)}
   ${sec("t-legal","No guarantees",`<p>${KITW} is provided "as is". There's no guarantee that it will find anyone, that matches are accurate, that it will always be available, or that information stays private. To the fullest extent the law allows, ${KITW} and its creator aren't liable for any loss, harm or damages arising from your use of ${KITW} or from contact with other users. These terms are governed by the laws of Ontario, Canada. Questions: [YOUR CONTACT EMAIL].</p>`)}
@@ -588,7 +589,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
   return `<div class="card">
     <div class="compose-row">${av(u)}<button class="pill" data-act="compose" aria-expanded="${open}">Who do you miss${F?", "+esc(F):""}?</button></div>
     ${!(u.history||[]).some(histReady)?`<div class="notice">${ic("pin",18)}<span>Add at least one place with its city and years on your Profile, so people from your past can find you.</span><button class="grey" data-tab="me">Add a place</button></div>`:""}
-    ${!hasPhoto(u)?photoNotice("Add a profile photo. When you match with someone, it's how they'll know it's really you. Your list stays inactive until you do.","Add photo"):""}
+    ${!hasPhoto(u)?photoNotice("Add a profile photo so the person you're looking for can see it's really you. Your list isn't sent until you do.","Add photo"):""}
     ${open?`<div class="compose-form">
       <label class="f" for="np_name">Name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
       <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(d.place)}" id="kw_np" aria-live="polite">${kwLeft(d.place)}</span></label>
@@ -607,7 +608,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
     ${st.txt==="Add a city"?`<div class="inline-fix"><input id="pc_${esc(p.id)}" placeholder="City or town" aria-label="City or town for ${esc(p.name)}"><button class="primary" data-act="setPickCity" data-id="${esc(p.id)}">Save</button></div><p class="fine">A city is now needed so matches are more certain.</p>`:""}
     ${st.txt==="Years too wide"?`<p class="post-text">Year ranges are now limited to ${MAX_SPAN}. Remove this and add it again with a shorter range.</p>`:""}
     ${st.txt==="Add your photo to send"?`<p class="post-text">This won't be sent until you add a profile photo.</p>`:""}
-    ${st.cls==="s-wait"?`<p class="post-text">${ic("lock",14)} Private. Nobody is told you're looking. If ${esc(p.name.split(" ")[0]||"they")} also adds you with a matching place, city and years, you'll both be connected.</p>`:""}
+    ${st.cls==="s-wait"?`<p class="post-text">${ic("lock",14)} Nobody else can see your list. If ${esc(p.name.split(" ")[0]||"they")} has joined and their place, city and years match, they'll get a request with your name and photo. If they say yes, you'll be connected. If they say no, you'll simply keep waiting.</p>`:""}
     ${st.txt==="Check a photo"?`<p class="post-text">Someone said yes. Open Requests to check their photo.</p>`:""}
     ${S.confirmDel===p.id?`<div class="notice">${ic("lock",18)}<span>Removing locks this spot for 30 days, so lists can't be cycled.</span><div class="btns"><button class="primary" data-act="cancelDel">Keep</button><button class="grey" data-act="delPick" data-id="${esc(p.id)}">Remove</button></div></div>`
       :`<div class="actions"><button class="act-btn" data-act="askDel" data-id="${esc(p.id)}">${ic("trash",18)}Remove</button></div>`}</article>`;}).join("")
@@ -682,7 +683,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
       <h1 class="prof-name">${esc(u.name||"New person")}</h1>
       ${past.length?`<p class="fine">Also known as ${esc(past.join(", "))}</p>`:""}
       <div class="btns center"><label class="primary" for="me_photo">${ic("camera",16)}${hasPhoto(u)?"Change photo":"Add photo"}</label>${u.photo?`<button class="grey" data-act="clearPhoto">Remove photo</button>`:""}</div>
-      <p class="fine">${hasPhoto(u)?"Your photo is shown only to people you match with.":"A clear photo of your face is required before you can match with anyone."}</p>
+      <p class="fine">${hasPhoto(u)?"Your photo is shown to the person you send a request to, and to people you connect with.":"A clear photo of your face is required before you can send or accept requests."}</p>
     </div></section>
 
   ${galleryCard(u)}
@@ -697,7 +698,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
       <input id="me_by" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="bday-year" placeholder="Year" aria-label="Birth year" value="${esc(u.by||"")}">
     </fieldset>
     <div class="grid2">
-      <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["man","Man"],["woman","Woman"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label><span></span></div>
+      <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["man","Male"],["woman","Female"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label><span></span></div>
     ${isMinor(u)?`<p class="err">${ic("lock",14)} You must be 18 or older to use ${KITW}. Your profile is hidden and your list won't be sent.</p>`:""}
     <p class="fine">${ic("lock",14)} Your birth date and gender are private. They're only used to confirm you're 18 or older and are never shown to anyone.</p></div>
 
@@ -712,8 +713,8 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <p class="fine"><button class="link inline" data-tab="example">See an example</button> · For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city and years match too.</p></div>
 
   <div class="card"><h2 class="ct">Privacy and safety</h2>
-    <div class="toggle"><div><b>Signed up</b><p class="fine">${u.joined?"People who list you with a matching history can match with you.":"No one can match with you."}</p></div><button class="switch" role="switch" aria-checked="${!!u.joined}" aria-label="Signed up" data-act="${u.joined?"leave":"join"}"></button></div>
-    <div class="toggle"><div><b>Pause being found</b><p class="fine">Keep your account but stop all new matches.</p></div><button class="switch" role="switch" aria-checked="${!!u.paused}" aria-label="Pause being found" data-act="pause"></button></div>
+    <div class="toggle"><div><b>Signed up</b><p class="fine">${u.joined?"People who list you with a matching history can send you a request.":"No one can find you."}</p></div><button class="switch" role="switch" aria-checked="${!!u.joined}" aria-label="Signed up" data-act="${u.joined?"leave":"join"}"></button></div>
+    <div class="toggle"><div><b>Pause being found</b><p class="fine">Keep your account but stop all new requests.</p></div><button class="switch" role="switch" aria-checked="${!!u.paused}" aria-label="Pause being found" data-act="pause"></button></div>
     <label class="f" for="me_never">Never connect me with<textarea id="me_never" placeholder="One name per line">${esc((u.never||[]).join("\n"))}</textarea></label>
     <p class="fine">Anyone with a similar name is quietly kept away from you. They're never told.</p>
     ${(u.blocked||[]).length?`<b>Blocked</b>`+u.blocked.map(id=>S.users[id]?`<div class="toggle"><span>${esc(S.users[id].name)}</span><button class="link" data-act="unblock" data-id="${esc(id)}">Unblock</button></div>`:"").join(""):""}</div>
@@ -722,11 +723,11 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     ${["No search. You can't look anyone up by name.",
        "The place, the city and the years all have to match.",
        `Year ranges are limited to ${MAX_SPAN} years, so no one can cast a wide net.`,
-       "Completely discreet. Nobody is ever told who is looking for them.",
-       "A match appears only when you both list each other, with a matching place, city and years.",
-       "If someone you list never lists you, nothing happens and nobody finds out.",
+       "Only the person you're looking for sees your request. Nobody else ever sees your list.",
+       "The person you're looking for decides. If you both list each other, you're connected right away.",
+       "Saying no or blocking is silent. The other person just keeps waiting.",
        `${KITW} is for the first hello only. You choose if and how to keep in touch afterwards.`,
-       "Your photo is shown only to people you match with.",
+       "Your photo is shown to the person you send a request to, and to people you connect with.",
        `Up to ${MAX_GAL} extra photos, seen only by people you've reconnected with.`,
        `Up to ${MAX_PICKS} people per list, and removed names lock their spot for 30 days.`,
        "A never-connect list, blocking, and a pause switch are always on hand."].map(t=>`<li>${ic("shield",18)}<span>${t}</span></li>`).join("")}</ul></div>`;}
