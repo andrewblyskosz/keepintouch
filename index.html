@@ -89,7 +89,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .act-btn{flex:1;background:transparent;color:var(--muted);font-weight:600;padding:8px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .act-btn:hover{background:var(--hover)}
 .status{flex:none;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;align-self:center}
-.s-wait{background:var(--sunk);color:var(--muted)}
+.s-wait{background:var(--brass);color:#14202C}
 .s-check{background:var(--brass-soft);color:var(--ink)}
 .s-conn{background:var(--brand-soft);color:var(--brand)}
 .s-new{background:var(--brass);color:#1B1407}
@@ -188,6 +188,8 @@ h2{margin:0;font-size:20px;font-weight:700}
 .ex-num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
 .ex-body{display:flex;flex-direction:column;gap:2px;min-width:0}
 .err svg,.fine svg{vertical-align:-2px}
+.bday{border:0;margin:0;padding:0;display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:8px;min-width:0}
+.bday legend{padding:0;margin-bottom:4px;font-size:13px;font-weight:600;color:var(--muted)}
 /* photo gallery + viewer */
 .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (min-width:520px){.gal{grid-template-columns:repeat(5,minmax(0,1fr))}}
@@ -391,7 +393,8 @@ function samplePhoto(hue){try{const c=document.createElement("canvas");c.width=c
   x.fillStyle=`hsl(${hue} 35% 78%)`;x.fillRect(0,0,200,200);x.fillStyle=`hsl(${hue} 30% 36%)`;
   x.beginPath();x.arc(100,82,38,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(100,200,72,64,0,Math.PI,Math.PI*2);x.fill();
   return c.toDataURL("image/jpeg",.8);}catch(e){return "";}}
-function migrate(){S.removedAt=S.removedAt||{};S.gone=S.gone||{users:[],picks:[]};
+function migrate(){S.removedAt=S.removedAt||{};
+  for(const x of Object.values(S.users)){if(x.birth&&!x.by&&/^\d{4}-\d{2}-\d{2}$/.test(x.birth)){[x.by,x.bm,x.bd]=x.birth.split("-");}if(x.gender==="nonbinary"||x.gender==="self"){x.gender="";x.genderText="";}}S.gone=S.gone||{users:[],picks:[]};
   for(const id of EXAMPLE_IDS){delete S.users[id];if(!S.gone.users.includes(id))S.gone.users.push(id);}
   for(const pid of ["p1","p2","p3"])if(!S.gone.picks.includes(pid))S.gone.picks.push(pid);
   S.picks=S.picks.filter(p=>!S.gone.picks.includes(p.id)&&S.users[p.owner]);
@@ -686,10 +689,13 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <label class="f" for="me_name">Full name<input id="me_name" value="${esc(u.name)}" placeholder="First and last name"></label>
     <label class="f" for="me_past">Past names and nicknames<input id="me_past" value="${esc(past.join(", "))}" placeholder="Maiden name, nickname, old spelling"></label>
     <p class="fine">Separate with commas. A last name on its own works too.</p>
+    <fieldset class="bday"><legend>Birth date</legend>
+      <select id="me_bm" aria-label="Birth month">${["Month","January","February","March","April","May","June","July","August","September","October","November","December"].map((m,i)=>`<option value="${i?String(i).padStart(2,"0"):""}"${(u.bm||"")===(i?String(i).padStart(2,"0"):"")?" selected":""}>${m}</option>`).join("")}</select>
+      <select id="me_bd" aria-label="Birth day"><option value="">Day</option>${Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0")).map(d=>`<option value="${d}"${u.bd===d?" selected":""}>${+d}</option>`).join("")}</select>
+      <input id="me_by" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="bday-year" placeholder="Year" aria-label="Birth year" value="${esc(u.by||"")}">
+    </fieldset>
     <div class="grid2">
-      <label class="f" for="me_birth">Birth date<input id="me_birth" type="date" min="1900-01-01" max="${new Date().toISOString().slice(0,10)}" value="${esc(u.birth||"")}"></label>
-      <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["woman","Woman"],["man","Man"],["nonbinary","Non-binary"],["self","Let me describe"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
-    ${u.gender==="self"?`<label class="f" for="me_gender_txt">Your gender<input id="me_gender_txt" value="${esc(u.genderText||"")}" maxlength="40" placeholder="How you describe your gender"></label>`:""}
+      <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["man","Man"],["woman","Woman"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label><span></span></div>
     ${isMinor(u)?`<p class="err">${ic("lock",14)} You must be 18 or older to use Kit. Your profile is hidden and your list won't be sent.</p>`:""}
     <p class="fine">${ic("lock",14)} Your birth date and gender are private. They're only used to confirm you're 18 or older and are never shown to anyone.</p></div>
 
@@ -838,9 +844,12 @@ document.addEventListener("change",e=>{const t=e.target,u=me();
   if(t.id==="who"){S.current=t.value;S.err="";}
   else if(t.id==="me_name"){u.name=t.value.trim();}
   else if(t.id==="me_past"){u.past=t.value.split(",").map(s=>s.trim()).filter(Boolean);}
-  else if(t.id==="me_birth"){u.birth=/^\d{4}-\d{2}-\d{2}$/.test(t.value)?t.value:"";}
-  else if(t.id==="me_gender"){u.gender=t.value;if(t.value!=="self")u.genderText="";}
-  else if(t.id==="me_gender_txt"){u.genderText=t.value.trim().slice(0,40);}
+  else if(t.id==="me_bm"||t.id==="me_bd"||t.id==="me_by"){
+    if(t.id==="me_bm")u.bm=t.value;else if(t.id==="me_bd")u.bd=t.value;else u.by=t.value.replace(/\D/g,"").slice(0,4);
+    const y=+u.by,ok=u.bm&&u.bd&&y>=1900&&y<=new Date().getFullYear();
+    const dt=ok?new Date(y,+u.bm-1,+u.bd):null;
+    u.birth=dt&&dt.getMonth()===+u.bm-1?`${u.by}-${u.bm}-${u.bd}`:"";}
+  else if(t.id==="me_gender"){u.gender=t.value;}
   else if(t.id==="me_never"){u.never=t.value.split("\n").map(s=>s.trim()).filter(Boolean);}
   else if(t.dataset.h!=null){const h=u.history[+t.dataset.h];h[t.dataset.f]=(t.dataset.f==="place"||t.dataset.f==="city")?t.value.trim():(n=>Number.isFinite(n)&&n>=1900&&n<=2100?n:"")(parseInt(t.value,10));}
   else if(t.id==="me_photo"&&t.files[0]){openCrop(t.files[0]);return;}
