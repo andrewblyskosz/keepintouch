@@ -152,7 +152,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .cover{position:relative;overflow:hidden}
 .net{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ct-wm{display:flex;align-items:center;gap:.3em;flex-wrap:wrap}
-.wm-inline{height:.82em;width:auto;display:inline-block}
+.wm-inline{height:.8em;width:auto;display:inline-block;vertical-align:-.04em;margin:0 .05em}
 .danger-btn{background:var(--warn);color:var(--surface);font-weight:600;padding:9px 14px;border-radius:6px}
 .foot{margin-top:24px;text-align:center;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;padding-inline:8px}
 .foot p{margin:0;max-width:60ch;margin-inline:auto}
@@ -260,6 +260,7 @@ try{S=JSON.parse(localStorage.getItem(KEY));}catch(e){}
 if(!S||!S.users)S=seed();
 S.gone=S.gone||{users:[],picks:[]};
 S.viewing=null;
+S.tab="me";
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 
 /* ---------- JSONBin sync ---------- */
@@ -385,6 +386,7 @@ const ghost=(s=40)=>`<span class="av ghost" style="width:${s}px;height:${s}px;fo
 const years=h=>`${h.from}–${h.to}`;
 const where=x=>esc(x.place)+(x.city?", "+esc(x.city):"");
 const firstName=u=>{const f=parts(u.name||"").first;return f?f[0].toUpperCase()+f.slice(1):"";};
+const KITW=`<svg class="wm-inline" viewBox="-20 -20 1795 760" role="img" aria-label="KIT"><path d="M156 723Q112 723 88.0 698.5Q64 674 64 630V93Q64 47 88.0 23.5Q112 0 156 0Q201 0 224.5 23.5Q248 47 248 93V311H250L493 43Q512 23 533.5 11.5Q555 0 582 0Q624 0 642.5 21.5Q661 43 659.5 71.5Q658 100 636 124L394 381V306L648 593Q674 622 674.0 652.5Q674 683 653.5 703.0Q633 723 593 723Q559 723 538.5 709.5Q518 696 494 669L250 396H248V630Q248 674 225.0 698.5Q202 723 156 723Z M908 723Q864 723 840.0 698.5Q816 674 816 629V94Q816 48 840.0 24.0Q864 0 908 0Q953 0 976.5 24.0Q1000 48 1000 94V629Q1000 674 977.0 698.5Q954 723 908 723Z M1426 723Q1382 723 1358.0 698.5Q1334 674 1334 630V159H1177Q1140 159 1120.5 139.5Q1101 120 1101 84Q1101 47 1120.5 28.0Q1140 9 1177 9H1675Q1712 9 1731.5 28.0Q1751 47 1751 84Q1751 120 1731.5 139.5Q1712 159 1675 159H1518V630Q1518 674 1495.0 698.5Q1472 723 1426 723Z" style="fill:var(--brand)"/><path d="M256 362H1426" style="stroke:var(--brass)" stroke-width="54" stroke-linecap="round"/><circle cx="256" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="908" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="1426" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/></svg>`;
 const LOGO=()=>`<svg class="wm" viewBox="-20 -20 1795 760" role="img" aria-label="KIT"><path d="M156 723Q112 723 88.0 698.5Q64 674 64 630V93Q64 47 88.0 23.5Q112 0 156 0Q201 0 224.5 23.5Q248 47 248 93V311H250L493 43Q512 23 533.5 11.5Q555 0 582 0Q624 0 642.5 21.5Q661 43 659.5 71.5Q658 100 636 124L394 381V306L648 593Q674 622 674.0 652.5Q674 683 653.5 703.0Q633 723 593 723Q559 723 538.5 709.5Q518 696 494 669L250 396H248V630Q248 674 225.0 698.5Q202 723 156 723Z M908 723Q864 723 840.0 698.5Q816 674 816 629V94Q816 48 840.0 24.0Q864 0 908 0Q953 0 976.5 24.0Q1000 48 1000 94V629Q1000 674 977.0 698.5Q954 723 908 723Z M1426 723Q1382 723 1358.0 698.5Q1334 674 1334 630V159H1177Q1140 159 1120.5 139.5Q1101 120 1101 84Q1101 47 1120.5 28.0Q1140 9 1177 9H1675Q1712 9 1731.5 28.0Q1751 47 1751 84Q1751 120 1731.5 139.5Q1712 159 1675 159H1518V630Q1518 674 1495.0 698.5Q1472 723 1426 723Z" style="fill:var(--bar-ink)"/><path d="M256 362H1426" style="stroke:var(--bar-accent)" stroke-width="54" stroke-linecap="round"/><circle cx="256" cy="362" r="60" style="fill:var(--bar-bg);stroke:var(--bar-accent)" stroke-width="34"/><circle cx="908" cy="362" r="60" style="fill:var(--bar-bg);stroke:var(--bar-accent)" stroke-width="34"/><circle cx="1426" cy="362" r="60" style="fill:var(--bar-bg);stroke:var(--bar-accent)" stroke-width="34"/></svg>`;
 
 /* clean-up of the old sample people (runs on every phone, and through sync) */
@@ -442,7 +444,7 @@ function viewer(){const v=S.viewing;if(!v)return "";const o=S.users[v.uid];const
 function render(){
   migrate();
   const u=me();
-  const tabs=[["people","People","users"],["connections","Reconnected","chat"],["me","Profile","user"]];
+  const tabs=[["me","Profile","user"],["people","People","users"],["connections","Reconnected","chat"]];
   const views={people,connections,me:meTab};
   if(S.tab==="requests")S.tab="connections";
   const body=S.tab==="terms"?termsPage():S.tab==="example"?examplePage():(!u.agreed&&S.tab!=="me")?agreeGate():!u.joined&&S.tab!=="me"?notJoined():(views[S.tab]||people)();
@@ -501,17 +503,17 @@ function examplePage(){const rows=[
   <button class="primary" data-tab="me" style="align-self:flex-start">Back to my profile</button></div>`;}
 
 function footer(){return `<footer class="foot">
-  <p>Kit is a tool for the first hello between people who once knew each other. Staying in touch, and anything that happens after you connect, is your own choice and responsibility.</p>
+  <p>${KITW} is a tool for the first hello between people who once knew each other. Staying in touch, and anything that happens after you connect, is your own choice and responsibility.</p>
   <p><button class="link" data-tab="terms">Terms of use</button> · <button class="link" data-tab="terms" data-sec="t-safety">Safety tips</button> · <button class="link" data-tab="terms" data-sec="t-privacy">Privacy</button></p></footer>`;}
 
 function agreeGate(){const u=me();return `<div class="card">
   <h2 class="ct ct-wm">Before you start</h2>
   <ul class="guards">
-    <li>${ic("users",18)}<span>Kit helps people who already knew each other reconnect. It isn't a dating or meeting service.</span></li>
-    <li>${ic("chat",18)}<span>Kit is for the first hello only. Staying in touch afterwards happens outside Kit, in whatever way the two of you choose.</span></li>
-    <li>${ic("shield",18)}<span>Kit doesn't verify identities or run background checks. Matches are based only on what people enter.</span></li>
+    <li>${ic("users",18)}<span>${KITW} helps people who already knew each other reconnect. It isn't a dating or meeting service.</span></li>
+    <li>${ic("chat",18)}<span>${KITW} is for the first hello only. Staying in touch afterwards happens outside ${KITW}, in whatever way the two of you choose.</span></li>
+    <li>${ic("shield",18)}<span>${KITW} doesn't verify identities or run background checks. Matches are based only on what people enter.</span></li>
     <li>${ic("check",18)}<span>You decide who to connect with. Anything you share, and any contact or meeting after a connection, is your own responsibility.</span></li>
-    <li>${ic("lock",18)}<span>Don't use Kit to contact someone who has cut ties with you, or anyone a court order says you must not contact.</span></li></ul>
+    <li>${ic("lock",18)}<span>Don't use ${KITW} to contact someone who has cut ties with you, or anyone a court order says you must not contact.</span></li></ul>
   <label class="check" for="agree_ck"><input id="agree_ck" type="checkbox"><span>I'm 18 or older, and I agree to the <button class="link inline" data-tab="terms">Terms of Use</button>.</span></label>
   ${S.agreeErr?`<p class="err">${esc(S.agreeErr)}</p>`:""}
   <button class="primary" data-act="agree" style="align-self:flex-start">Continue</button></div>`;}
@@ -521,22 +523,22 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   <button class="link" data-tab="people">‹ Back</button>
   <h1 class="prof-name" style="text-align:left">Terms of use and safety</h1>
   <p class="fine">Last updated October 26, 2026 · Test version</p>
-  ${sec("t-what","What Kit is",`<p>Kit is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. Kit does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>Kit is for the first contact only. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside Kit.</p>`)}
+  ${sec("t-what",`What ${KITW} is`,`<p>${KITW} is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. ${KITW} does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>${KITW} is for the first contact only. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside ${KITW}.</p>`)}
   ${sec("t-resp","Your choices are your responsibility",`<ul>
-    <li>Kit is completely discreet. Nobody is told who is looking for them. Two people are connected only when both have listed each other with a matching place, city and years.</li>
+    <li>${KITW} is completely discreet. Nobody is told who is looking for them. Two people are connected only when both have listed each other with a matching place, city and years.</li>
     <li>Any messages, sharing of personal details, calls, meetings or relationships that follow a connection are solely between the people involved, and at their own risk.</li>
-    <li>Kit is not responsible for the conduct of any user, online or offline.</li></ul>`)}
-  ${sec("t-rules","Rules for using Kit",`<ul>
+    <li>${KITW} is not responsible for the conduct of any user, online or offline.</li></ul>`)}
+  ${sec("t-rules",`Rules for using ${KITW}`,`<ul>
     <li>You must be 18 or older.</li>
     <li>Use your real name and only enter places and years where you genuinely knew the person.</li>
     <li>Only upload photos of yourself that you have the right to share.</li>
-    <li>Don't use Kit to contact anyone who has cut ties with you, or anyone a court order, peace bond or restraining order says you must not contact.</li>
+    <li>Don't use ${KITW} to contact anyone who has cut ties with you, or anyone a court order, peace bond or restraining order says you must not contact.</li>
     <li>No harassment, threats, impersonation, spam, selling, or asking for money.</li>
-    <li>If someone says no or doesn't respond, leave it there. Don't try to reach them another way through Kit.</li>
+    <li>If someone says no or doesn't respond, leave it there. Don't try to reach them another way through ${KITW}.</li>
     <li>Accounts that break these rules can be removed without notice.</li></ul>`)}
   ${sec("t-safety","Safety tips",`<ul>
     <li>Take your time. Chat or video call before sharing your phone number, address or workplace.</li>
-    <li>Never send money, gift cards or financial details to anyone you meet through Kit.</li>
+    <li>Never send money, gift cards or financial details to anyone you meet through ${KITW}.</li>
     <li>If you meet in person, choose a public place and tell a friend or family member where you'll be.</li>
     <li>If something feels off, trust that feeling. Use Block, and report the person.</li>
     <li>If you're in danger, call 911 or your local emergency number.</li></ul>`)}
@@ -544,7 +546,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
     <li>Your list of people is never shown to anyone. Your photo is shown only to people you match with. Extra photos are shown only to people you've reconnected with.</li>
     <li>This test version stores information in your browser and, if sync is turned on, in a shared online file. It is not encrypted, so don't enter anything sensitive.</li>
     <li>You can remove your photos, places and list at any time, or turn off "Signed up" to stop being found.</li></ul>`)}
-  ${sec("t-legal","No guarantees",`<p>Kit is provided "as is". There's no guarantee that it will find anyone, that matches are accurate, that it will always be available, or that information stays private. To the fullest extent the law allows, Kit and its creator aren't liable for any loss, harm or damages arising from your use of Kit or from contact with other users. These terms are governed by the laws of Ontario, Canada. Questions: [YOUR CONTACT EMAIL].</p>`)}
+  ${sec("t-legal","No guarantees",`<p>${KITW} is provided "as is". There's no guarantee that it will find anyone, that matches are accurate, that it will always be available, or that information stays private. To the fullest extent the law allows, ${KITW} and its creator aren't liable for any loss, harm or damages arising from your use of ${KITW} or from contact with other users. These terms are governed by the laws of Ontario, Canada. Questions: [YOUR CONTACT EMAIL].</p>`)}
   <button class="primary" data-tab="people" style="align-self:flex-start">Done</button></div>`;}
 
 function resetCard(){const synced=!!(SY.bin&&SY.key);return `<div class="card" role="alertdialog" aria-labelledby="rsTitle">
@@ -625,7 +627,7 @@ function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
     <div class="big-photo">${av(o,120)}<b style="font-size:18px">${esc(o.name)}</b>
       <span class="meta">${ic("pin",14)}Knew you at ${where(p)}, around ${esc(p.from)}–${esc(p.to)}</span>
       <span class="meta">Listed you as "${esc(p.name)}"</span></div>
-    <p class="fine">Saying yes shares your photo with them so they can confirm it's you. Kit doesn't check anyone's identity, so only say yes if you want to hear from this person.</p>
+    <p class="fine">Saying yes shares your photo with them so they can confirm it's you. ${KITW} doesn't check anyone's identity, so only say yes if you want to hear from this person.</p>
     ${hasPhoto(u)?`<div class="btns"><button class="primary" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="accepted">Yes, I know them</button><button class="grey" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="ignored">Not now</button></div>`
       :`${photoNotice("Add a profile photo first, so they can check it's really you.","Add photo")}<div class="btns"><button class="grey" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="ignored">Not now</button></div>`}
     <div class="toggle"><p class="fine">Only you can see this. They're never told if you choose Not now or Block.</p><button class="link warn" data-act="block" data-id="${esc(o.id)}">Block</button></div></article>`;}).join("");
@@ -642,26 +644,26 @@ const listWords=a=>a.length<2?a[0]:a.slice(0,-1).join(", ")+" and "+a[a.length-1
 function connections(){const u=me();const cs=connectionsOf(u.id);S.seen=S.seen||{};const seenBefore=S.seen[u.id]||[];S.seen[u.id]=cs.map(c=>c.pk);save();
   const flash=S.flash?`<div class="notice">${ic("check",18)}<span>${esc(S.flash)}</span></div>`:"";
   if(!cs.length)return flash+`<div class="card empty">${ic("chat",32)}<b style="color:var(--ink)">No reconnections yet</b><span>They'll appear here once both of you say yes.</span></div>`;
-  const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>Kit is for the first hello</b>
-    <span>Use these messages to reintroduce yourselves and make sure it's really them. Kit isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
+  const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>${KITW} is for the first hello</b>
+    <span>Use these messages to reintroduce yourselves and make sure it's really them. ${KITW} isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
   return flash+intro+cs.map(c=>{const o=S.users[c.other];const th=S.messages[c.pk]||[];const pend=S.pendingSend&&S.pendingSend.pk===c.pk?S.pendingSend:null;
     const panel=S.connPanel&&S.connPanel.pk===c.pk?S.connPanel.kind:"";const F=firstName(o)||"them";
     return `<article class="card${c.how==="mutual"?" glow":""}">
     <div class="post-head">${av(o,44)}<div class="who"><b>${esc(o.name)}</b><span class="meta">${c.how==="mutual"?"You picked each other":"Reconnected"}${c.place?" · "+esc(c.place):""}</span></div>${!seenBefore.includes(c.pk)?`<span class="status s-new">New match</span>`:c.how==="mutual"?`<span class="status s-conn">Mutual</span>`:""}</div>
     ${thumbs(o)}
     <div class="divider"></div>
-    ${(S.tipOff||{})[c.pk]?"":`<div class="notice tip">${ic("shield",18)}<span>This chat is just for reconnecting. Take your time, and when you're both comfortable, swap the contact details you choose and keep in touch outside Kit. Never send money or gift cards.</span><button class="link" data-act="dismissTip" data-pk="${esc(c.pk)}">Got it</button></div>`}
+    ${(S.tipOff||{})[c.pk]?"":`<div class="notice tip">${ic("shield",18)}<span>This chat is just for reconnecting. Take your time, and when you're both comfortable, swap the contact details you choose and keep in touch outside ${KITW}. Never send money or gift cards.</span><button class="link" data-act="dismissTip" data-pk="${esc(c.pk)}">Got it</button></div>`}
     ${th.length?`<div class="comments">${th.map(m=>{const a=S.users[m.from]||{name:"Someone",hue:0};const mine=m.from===u.id;const money=!mine&&CHECKS[3][2].test(m.text);
-      return `<div class="cmt">${av(a,32)}<div class="bubble-wrap"><div class="bubble"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div>${money?`<p class="warn-line">${ic("shield",14)}This message mentions money. Kit will never ask you for money, and neither should anyone you reconnect with.</p>`:""}</div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
+      return `<div class="cmt">${av(a,32)}<div class="bubble-wrap"><div class="bubble"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div>${money?`<p class="warn-line">${ic("shield",14)}This message mentions money. ${KITW} will never ask you for money, and neither should anyone you reconnect with.</p>`:""}</div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
     ${pend?`<div class="notice warn">${ic("shield",18)}<div class="col-tight"><b>Before you send</b>
-        <span>This message includes ${esc(listWords(pend.kinds))}. ${pend.kinds.includes("money")?"Never send money, gift cards or bank details to anyone you reconnect with, even someone you used to know. ":"Sharing contact details is how you'll stay in touch after Kit, so only send them when you're sure it's the person you knew. "}Once it's sent, it can't be taken back.</span>
+        <span>This message includes ${esc(listWords(pend.kinds))}. ${pend.kinds.includes("money")?"Never send money, gift cards or bank details to anyone you reconnect with, even someone you used to know. ":"Sharing contact details is how you'll stay in touch after ${KITW}, so only send them when you're sure it's the person you knew. "}Once it's sent, it can't be taken back.</span>
         <div class="btns"><button class="primary" data-act="cancelSend" data-pk="${esc(c.pk)}">Edit message</button><button class="grey" data-act="confirmSend" data-pk="${esc(c.pk)}">Send anyway</button></div></div></div>`
       :`<div class="cmt-input">${av(u,32)}<div class="pill-input"><input id="m_${esc(c.pk)}" value="${esc((S.msgDraft||{})[c.pk]||"")}" placeholder="Write a message…" aria-label="Message ${esc(o.name)}" maxlength="400"><button class="icon-btn" data-act="send" data-pk="${esc(c.pk)}" aria-label="Send">${ic("send",18)}</button></div></div>`}
     ${panel==="disconnect"?`<div class="notice">${ic("x",18)}<div class="col-tight"><b>Disconnect from ${esc(F)}?</b>
         <span>This ends the connection for both of you. The conversation and each other's photos disappear. ${esc(F)} isn't sent a notice, but you'll no longer appear in their Reconnected list. This can't be undone.</span>
         <div class="btns"><button class="primary" data-act="closePanel">Keep connection</button><button class="grey" data-act="disconnect" data-pk="${esc(c.pk)}">Disconnect</button></div></div></div>`:""}
     ${panel==="block"?`<div class="notice">${ic("lock",18)}<div class="col-tight"><b>Block ${esc(F)}?</b>
-        <span>You'll disappear from each other's lists and matches, and they can never reach you through Kit again. They aren't told. You can unblock later from your Profile.</span>
+        <span>You'll disappear from each other's lists and matches, and they can never reach you through ${KITW} again. They aren't told. You can unblock later from your Profile.</span>
         <div class="btns"><button class="primary" data-act="closePanel">Cancel</button><button class="danger-btn" data-act="block" data-id="${esc(o.id)}">Block</button></div></div></div>`:""}
     ${panel==="report"?`<div class="notice">${ic("shield",18)}<div class="col-tight"><b>Report ${esc(F)}</b>
         <span>What's happening? ${esc(F)} won't know who reported them.</span>
@@ -696,7 +698,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     </fieldset>
     <div class="grid2">
       <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["man","Man"],["woman","Woman"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label><span></span></div>
-    ${isMinor(u)?`<p class="err">${ic("lock",14)} You must be 18 or older to use Kit. Your profile is hidden and your list won't be sent.</p>`:""}
+    ${isMinor(u)?`<p class="err">${ic("lock",14)} You must be 18 or older to use ${KITW}. Your profile is hidden and your list won't be sent.</p>`:""}
     <p class="fine">${ic("lock",14)} Your birth date and gender are private. They're only used to confirm you're 18 or older and are never shown to anyone.</p></div>
 
   <div class="card"><h2 class="ct">Where people knew you</h2>
@@ -716,14 +718,14 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <p class="fine">Anyone with a similar name is quietly kept away from you. They're never told.</p>
     ${(u.blocked||[]).length?`<b>Blocked</b>`+u.blocked.map(id=>S.users[id]?`<div class="toggle"><span>${esc(S.users[id].name)}</span><button class="link" data-act="unblock" data-id="${esc(id)}">Unblock</button></div>`:"").join(""):""}</div>
 
-  <div class="card"><h2 class="ct ct-wm">How <svg class="wm-inline" viewBox="-20 -20 1795 760" role="img" aria-label="KIT"><path d="M156 723Q112 723 88.0 698.5Q64 674 64 630V93Q64 47 88.0 23.5Q112 0 156 0Q201 0 224.5 23.5Q248 47 248 93V311H250L493 43Q512 23 533.5 11.5Q555 0 582 0Q624 0 642.5 21.5Q661 43 659.5 71.5Q658 100 636 124L394 381V306L648 593Q674 622 674.0 652.5Q674 683 653.5 703.0Q633 723 593 723Q559 723 538.5 709.5Q518 696 494 669L250 396H248V630Q248 674 225.0 698.5Q202 723 156 723Z M908 723Q864 723 840.0 698.5Q816 674 816 629V94Q816 48 840.0 24.0Q864 0 908 0Q953 0 976.5 24.0Q1000 48 1000 94V629Q1000 674 977.0 698.5Q954 723 908 723Z M1426 723Q1382 723 1358.0 698.5Q1334 674 1334 630V159H1177Q1140 159 1120.5 139.5Q1101 120 1101 84Q1101 47 1120.5 28.0Q1140 9 1177 9H1675Q1712 9 1731.5 28.0Q1751 47 1751 84Q1751 120 1731.5 139.5Q1712 159 1675 159H1518V630Q1518 674 1495.0 698.5Q1472 723 1426 723Z" style="fill:var(--brand)"/><path d="M256 362H1426" style="stroke:var(--brass)" stroke-width="54" stroke-linecap="round"/><circle cx="256" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="908" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="1426" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/></svg> protects you</h2><ul class="guards">
+  <div class="card"><h2 class="ct ct-wm">How ${KITW} protects you</h2><ul class="guards">
     ${["No search. You can't look anyone up by name.",
        "The place, the city and the years all have to match.",
        `Year ranges are limited to ${MAX_SPAN} years, so no one can cast a wide net.`,
        "Completely discreet. Nobody is ever told who is looking for them.",
        "A match appears only when you both list each other, with a matching place, city and years.",
        "If someone you list never lists you, nothing happens and nobody finds out.",
-       "Kit is for the first hello only. You choose if and how to keep in touch afterwards.",
+       `${KITW} is for the first hello only. You choose if and how to keep in touch afterwards.`,
        "Your photo is shown only to people you match with.",
        `Up to ${MAX_GAL} extra photos, seen only by people you've reconnected with.`,
        `Up to ${MAX_PICKS} people per list, and removed names lock their spot for 30 days.`,
