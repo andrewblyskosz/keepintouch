@@ -5,7 +5,7 @@
 /* Layout: social-feed shell — dark test strip, sticky white top bar with icon tabs, one 680px column of white cards on grey */
 :root{
   --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F0F2F5; --hover:#E4E8EC; --ink:#14202C; --muted:#5A6573; --line:#DCE1E7;
-  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --mark-tile:transparent; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
+  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --mark-tile:transparent; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
   --lb-bg:rgba(8,12,11,.97); --lb-ink:#FFFFFF; --lb-muted:#B8C2BF; --strip:#22282A; --strip-ink:#E9EEEC; --strip-muted:#A9B4B0; --strip-line:#465052; --strip-field:#30383A;
   --font:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -190,6 +190,13 @@ h2{margin:0;font-size:20px;font-weight:700}
 .err svg,.fine svg{vertical-align:-2px}
 .bday{border:0;margin:0;padding:0;display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:8px;min-width:0}
 .bday legend{padding:0;margin-bottom:4px;font-size:13px;font-weight:600;color:var(--muted)}
+.hist-actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.save-btn{background:var(--ok);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
+.del-btn{background:var(--danger);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
+.save-btn:hover,.del-btn:hover{filter:brightness(1.08)}
+.saved-note{display:inline-flex;align-items:center;gap:4px;color:var(--ok);font-weight:600;font-size:14px;margin-right:auto}
+#np_era,.hist-row .era{font-size:14px;color:var(--muted)}
+.hist-row .era{grid-column:1/-1}
 /* photo gallery + viewer */
 .gal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 @media (min-width:520px){.gal{grid-template-columns:repeat(5,minmax(0,1fr))}}
@@ -299,7 +306,8 @@ const hasPhoto=u=>!!(u&&safePhoto(u.photo));
 const lockedSlots=uid=>Object.values(S.removedAt||{}).filter(r=>r&&r.owner===uid&&r.at>(S.coolClear||0)&&Date.now()-r.at<COOL);
 const slotsUsed=uid=>S.picks.filter(p=>p.owner===uid).length+lockedSlots(uid).length;
 const unlockDate=l=>new Date(Math.min(...l.map(r=>r.at))+COOL).toLocaleDateString(undefined,{month:"short",day:"numeric"});
-const pickReady=(p,o)=>!!p.city&&(+p.to-+p.from)<=MAX_SPAN&&hasPhoto(o);
+const spanOk=p=>!hasYears(p)||histSpan(p)[1]-histSpan(p)[0]<=MAX_SPAN;
+const pickReady=(p,o)=>!!p.city&&spanOk(p)&&hasPhoto(o);
 
 /* ---------- fuzzy matching ---------- */
 const NICK=[["john","jon","jonathan","johnny","jack"],["robert","rob","bob","bobby","robbie"],["elizabeth","liz","beth","lizzie","betty","eliza"],["michael","mike","mikey","mick"],["katherine","catherine","kathryn","kate","katie","kathy","cathy","kat"],["andrew","andy","drew"],["james","jim","jimmy","jamie"],["william","will","bill","billy","liam"],["stephen","steven","steve"],["christopher","chris"],["susan","sue","suzy","susie"],["thomas","tom","tommy"],["david","dave","davey"],["nicholas","nick","nicky"],["matthew","matt"],["alexander","alexandra","alex","sandy"],["samuel","samantha","sam","sammy"],["jennifer","jen","jenny"],["margaret","maggie","meg","peggy"],["richard","rick","rich"],["joseph","joe","joey"],["daniel","dan","danny"],["anthony","tony"],["patricia","pat","patty","trish"],["deborah","debbie","deb"],["devesh","dev"]];
@@ -317,7 +325,8 @@ function placeMatch(x,y){const tx=norm(x).split(/\s+/).filter(Boolean),ty=norm(y
   const sx=tx.filter(t=>!GENERIC.has(t)&&t.length>2),sy=ty.filter(t=>!GENERIC.has(t)&&t.length>2);
   if(!sx.length||!sy.length){const raw=v=>String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();return !!raw(x)&&raw(x)===raw(y);}
   return sx.some(a=>sy.some(b=>a===b||(Math.min(a.length,b.length)>=5&&lev(a,b)<=1)));}
-const yearsOverlap=(a1,a2,b1,b2)=>a1-2<=b2&&b1-2<=a2;
+const YEAR_SLACK=3;
+const yearsOverlap=(a1,a2,b1,b2)=>a1-YEAR_SLACK<=b2&&b1-YEAR_SLACK<=a2;
 const CITY_ALIAS={toronto:["etobicoke","scarborough","northyork","eastyork","york","gta"]};
 const cityKey=c=>{const n=norm(c).replace(/\b(city|of|the|on|ont|ontario|canada)\b/g," ").replace(/\s+/g,"");for(const [k,v] of Object.entries(CITY_ALIAS))if(n===k||v.includes(n))return k;return n;};
 function cityMatch(a,b){const x=cityKey(a),y=cityKey(b);if(!x||!y)return false;return x===y||(Math.min(x.length,y.length)>=5&&lev(x,y)<=1);}
@@ -325,9 +334,10 @@ const MAX_KW=5;
 const placeParts=p=>String(p||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,MAX_KW);
 const placesMatch=(a,b)=>placeParts(a).some(x=>placeParts(b).some(y=>placeMatch(x,y)));
 const yr=v=>{const n=parseInt(v,10);return Number.isFinite(n)?n:null;};
-const histReady=h=>!!(h&&String(h.place||"").trim()&&String(h.city||"").trim()&&(yr(h.from)!==null||yr(h.to)!==null));
+const histReady=h=>!!(h&&String(h.place||"").trim()&&String(h.city||"").trim());
+const hasYears=x=>yr(x&&x.from)!==null||yr(x&&x.to)!==null;
 const histSpan=h=>{let a=yr(h.from),b=yr(h.to);if(a===null)a=b;if(b===null)b=a;return a<=b?[a,b]:[b,a];};
-const histEntry=(pick,u)=>(u.history||[]).filter(histReady).find(h=>placesMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&yearsOverlap(+pick.from,+pick.to,histSpan(h)[0],histSpan(h)[1]));
+const histEntry=(pick,u)=>(u.history||[]).filter(histReady).find(h=>placesMatch(pick.place,h.place)&&cityMatch(pick.city,h.city)&&(!hasYears(pick)||!hasYears(h)||yearsOverlap(histSpan(pick)[0],histSpan(pick)[1],histSpan(h)[0],histSpan(h)[1])));
 function blockedBetween(a,b){const hit=(x,y)=>(x.blocked||[]).includes(y.id)||(x.never||[]).some(n=>namesOf(y).some(m=>fullSim(n,m)));return hit(a,b)||hit(b,a);}
 function ageOf(u){const b=u&&u.birth;if(!b||!/^\d{4}-\d{2}-\d{2}$/.test(b))return null;const [y,m,d]=b.split("-").map(Number),t=new Date();let a=t.getFullYear()-y;if(t.getMonth()+1<m||(t.getMonth()+1===m&&t.getDate()<d))a--;return a;}
 const isMinor=u=>{const a=ageOf(u);return a!==null&&a<18;};
@@ -350,7 +360,7 @@ function inbox(uid){const out=[];for(const p of S.picks){if(p.owner===uid)contin
   if(pickTargets(p,uid)&&!isMutual(p,uid)&&!S.decisions[k]&&!connectedWith(uid,p.owner))out.push(p);}return out;}
 function toConfirm(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id;
   if(S.decisions[k]==="accepted"&&!S.confirms[k]&&!isMutual(p,c.id))out.push({p,c});}return out;}
-function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(+p.to-+p.from>MAX_SPAN)return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
+function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(!spanOk(p))return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
   const conn=cs.find(c=>connectedWith(p.owner,c.id));if(conn)return{cls:"s-conn",txt:"Connected with "+conn.name};
   if(cs.some(c=>S.decisions[p.id+"|"+c.id]==="accepted"&&!S.confirms[p.id+"|"+c.id]))return{cls:"s-check",txt:"Check a photo"};
   return{cls:"s-wait",txt:"Waiting"};}
@@ -383,7 +393,7 @@ const safePhoto=p=>typeof p==="string"&&/^data:image\/(jpeg|png|webp);base64,[A-
 function av(u,s=40){const ini=parts(u.name||"");const t=((ini.first[0]||"?")+(ini.last[0]||"")).toUpperCase();const ph=safePhoto(u.photo);
   return `<span class="av" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.38)}px;background:hsl(${(+u.hue||200)%360} 42% 40%)">${ph?`<img src="${ph}" alt="">`:esc(t)}</span>`;}
 const ghost=(s=40)=>`<span class="av ghost" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.4)}px">?</span>`;
-const years=h=>`${h.from}–${h.to}`;
+const years=h=>{if(!hasYears(h))return "years not given";const [a,b]=histSpan(h);return a===b?`${a}`:`${a}–${b}`;};
 const where=x=>esc(x.place)+(x.city?", "+esc(x.city):"");
 const firstName=u=>{const f=parts(u.name||"").first;return f?f[0].toUpperCase()+f.slice(1):"";};
 const KITW=`<svg class="wm-inline" viewBox="-20 -20 1795 760" role="img" aria-label="KIT"><path d="M156 723Q112 723 88.0 698.5Q64 674 64 630V93Q64 47 88.0 23.5Q112 0 156 0Q201 0 224.5 23.5Q248 47 248 93V311H250L493 43Q512 23 533.5 11.5Q555 0 582 0Q624 0 642.5 21.5Q661 43 659.5 71.5Q658 100 636 124L394 381V306L648 593Q674 622 674.0 652.5Q674 683 653.5 703.0Q633 723 593 723Q559 723 538.5 709.5Q518 696 494 669L250 396H248V630Q248 674 225.0 698.5Q202 723 156 723Z M908 723Q864 723 840.0 698.5Q816 674 816 629V94Q816 48 840.0 24.0Q864 0 908 0Q953 0 976.5 24.0Q1000 48 1000 94V629Q1000 674 977.0 698.5Q954 723 908 723Z M1426 723Q1382 723 1358.0 698.5Q1334 674 1334 630V159H1177Q1140 159 1120.5 139.5Q1101 120 1101 84Q1101 47 1120.5 28.0Q1140 9 1177 9H1675Q1712 9 1731.5 28.0Q1751 47 1751 84Q1751 120 1731.5 139.5Q1712 159 1675 159H1518V630Q1518 674 1495.0 698.5Q1472 723 1426 723Z" style="fill:var(--brand)"/><path d="M256 362H1426" style="stroke:var(--brass)" stroke-width="54" stroke-linecap="round"/><circle cx="256" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="908" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/><circle cx="1426" cy="362" r="60" style="fill:var(--surface);stroke:var(--brass)" stroke-width="34"/></svg>`;
@@ -476,6 +486,9 @@ function strip(u){
     <li>Turn on Sync setup on both phones so matches and messages reach each other.</li></ol></details>`:""}
   </div></div>`;}
 
+function eraOptions(){let o=`<option value="">Not sure? Pick roughly when…</option>`;
+  for(let d=1940;d<=2020;d+=10){const n=`${d}s`;o+=`<optgroup label="${n}"><option value="${d}-${d+3}">Early ${n} (${d}–${d+3})</option><option value="${d+3}-${d+6}">Mid ${n} (${d+3}–${d+6})</option><option value="${d+6}-${d+9}">Late ${n} (${d+6}–${d+9})</option></optgroup>`;}
+  return o;}
 function kwLeft(v){const n=String(v||"").split(",").filter(x=>x.trim()).length;const left=MAX_KW-n;
   return left<0?`Only the first ${MAX_KW} details are used`:left===0?"No details left":left===1?"1 detail left":`${left} details left`;}
 function kwClass(v){return String(v||"").split(",").filter(x=>x.trim()).length>MAX_KW?"kw-left over":"kw-left";}
@@ -499,7 +512,7 @@ function examplePage(){const rows=[
     <li>${ic("check",18)}<span>Put the main name first, then nicknames or details, separated by commas. Up to ${MAX_KW} per line.</span></li>
     <li>${ic("check",18)}<span>Use one line per chapter instead of your whole life on one line. The years are what make matches accurate.</span></li>
     <li>${ic("check",18)}<span>Only one detail has to match. Capitals, accents and extra spaces don't matter.</span></li>
-    <li>${ic("check",18)}<span>Only remember one year? Fill in From and leave To empty.</span></li>
+    <li>${ic("check",18)}<span>Only remember one year? Fill in From and leave To empty. Not sure at all? Pick a rough time like "early 1980s", or leave the years blank.</span></li>
     <li>${ic("check",18)}<span>Common words like school, grade, team or program only count next to something more specific.</span></li></ul>
   <button class="primary" data-tab="me" style="align-self:flex-start">Back to my profile</button></div>`;}
 
@@ -588,27 +601,28 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
   const open=S.compose||!!S.err;const d=S.draft||{};const locked=lockedSlots(u.id);const used=slotsUsed(u.id);
   return `<div class="card">
     <div class="compose-row">${av(u)}<button class="pill" data-act="compose" aria-expanded="${open}">Who do you miss${F?", "+esc(F):""}?</button></div>
-    ${!(u.history||[]).some(histReady)?`<div class="notice">${ic("pin",18)}<span>Add at least one place with its city and years on your Profile, so people from your past can find you.</span><button class="grey" data-tab="me">Add a place</button></div>`:""}
+    ${!(u.history||[]).some(histReady)?`<div class="notice">${ic("pin",18)}<span>Add at least one place and its city on your Profile, so people from your past can find you.</span><button class="grey" data-tab="me">Add a place</button></div>`:""}
     ${!hasPhoto(u)?photoNotice("Add a profile photo so the person you're looking for can see it's really you. Your list isn't sent until you do.","Add photo"):""}
     ${open?`<div class="compose-form">
       <label class="f" for="np_name">Name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
       <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(d.place)}" id="kw_np" aria-live="polite">${kwLeft(d.place)}</span></label>
         <label class="f" for="np_city">City or town<input id="np_city" value="${esc(d.city)}" placeholder="e.g. Toronto"></label></div>
       <p class="fine">Add other names or details for the place, separated by commas (up to ${MAX_KW}), like the school's nickname, a campus, a team or a department. Only one has to match. <button class="link inline" data-tab="example">See an example</button></p>
-      <div class="grid2"><label class="f" for="np_from">From<input id="np_from" type="number" inputmode="numeric" value="${esc(d.from)}" placeholder="1985" min="1930" max="2026"></label>
-        <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" type="number" inputmode="numeric" value="${esc(d.to)}" placeholder="1989" min="1930" max="2026"></label></div>
-      <p class="fine">From and To can be at most ${MAX_SPAN} years apart, so pick the years you're most sure of.</p>
+      <div class="grid2"><label class="f" for="np_from">From (optional)<input id="np_from" type="number" inputmode="numeric" value="${esc(d.from)}" placeholder="Year" min="1930" max="2026"></label>
+        <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" type="number" inputmode="numeric" value="${esc(d.to)}" placeholder="Year" min="1930" max="2026"></label></div>
+      <select id="np_era" aria-label="Pick roughly when">${eraOptions()}</select>
+      <p class="fine">Years are optional. If you remember them, they help the right person find you. From and To can be at most ${MAX_SPAN} years apart.</p>
       ${S.err?`<p class="err">${esc(S.err)}</p>`:""}
       <div class="btns"><button class="primary" data-act="addPick" ${used>=MAX_PICKS?"disabled":""}>Add to my list</button><button class="grey" data-act="compose">Cancel</button></div></div>`:""}
     <div class="divider"></div>
-    <div class="compose-foot">${ic("shield",18)}<span>Names aren't searchable. The place, city and years all have to match. ${used} of ${MAX_PICKS} spots used${locked.length?`, ${locked.length} locked until ${unlockDate(locked)}`:""}.</span></div>
+    <div class="compose-foot">${ic("shield",18)}<span>Names aren't searchable. The place and city have to match, and the years too if you both add them. ${used} of ${MAX_PICKS} spots used${locked.length?`, ${locked.length} locked until ${unlockDate(locked)}`:""}.</span></div>
   </div>
   ${mine.length?mine.slice().reverse().map(p=>{const st=pickStatus(p);return `<article class="card">
-    <div class="post-head">${ghost()}<div class="who"><b>${esc(p.name)}</b><span class="meta">${ic("pin",14)}${where(p)} · ${esc(p.from)}–${esc(p.to)}</span></div><span class="status ${st.cls}">${esc(st.txt)}</span></div>
+    <div class="post-head">${ghost()}<div class="who"><b>${esc(p.name)}</b><span class="meta">${ic("pin",14)}${where(p)} · ${esc(years(p))}</span></div><span class="status ${st.cls}">${esc(st.txt)}</span></div>
     ${st.txt==="Add a city"?`<div class="inline-fix"><input id="pc_${esc(p.id)}" placeholder="City or town" aria-label="City or town for ${esc(p.name)}"><button class="primary" data-act="setPickCity" data-id="${esc(p.id)}">Save</button></div><p class="fine">A city is now needed so matches are more certain.</p>`:""}
     ${st.txt==="Years too wide"?`<p class="post-text">Year ranges are now limited to ${MAX_SPAN}. Remove this and add it again with a shorter range.</p>`:""}
     ${st.txt==="Add your photo to send"?`<p class="post-text">This won't be sent until you add a profile photo.</p>`:""}
-    ${st.cls==="s-wait"?`<p class="post-text">${ic("lock",14)} Nobody else can see your list. If ${esc(p.name.split(" ")[0]||"they")} has joined and their place, city and years match, they'll get a request with your name and photo. If they say yes, you'll be connected. If they say no, you'll simply keep waiting.</p>`:""}
+    ${st.cls==="s-wait"?`<p class="post-text">${ic("lock",14)} Nobody else can see your list. If ${esc(p.name.split(" ")[0]||"they")} has joined and the place and city match (and the years, if you both gave them), they'll get a request with your name and photo. If they say yes, you'll be connected. If they say no, you'll simply keep waiting.</p>`:""}
     ${st.txt==="Check a photo"?`<p class="post-text">Someone said yes. Open Requests to check their photo.</p>`:""}
     ${S.confirmDel===p.id?`<div class="notice">${ic("lock",18)}<span>Removing locks this spot for 30 days, so lists can't be cycled.</span><div class="btns"><button class="primary" data-act="cancelDel">Keep</button><button class="grey" data-act="delPick" data-id="${esc(p.id)}">Remove</button></div></div>`
       :`<div class="actions"><button class="act-btn" data-act="askDel" data-id="${esc(p.id)}">${ic("trash",18)}Remove</button></div>`}</article>`;}).join("")
@@ -626,7 +640,7 @@ function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
     <div class="btns"><button class="primary" style="flex:1" data-act="confirm" data-k="${esc(p.id)}|${esc(c.id)}" data-v="yes">${ic("check",18)}Yes, that's them</button><button class="grey" style="flex:1" data-act="confirm" data-k="${esc(p.id)}|${esc(c.id)}" data-v="no">No, not them</button></div></article>`;}).join("");
   if(inb.length)h+=`<h2 class="ct" style="padding-inline:4px">Want to reconnect <span style="color:var(--alert)">${inb.length}</span></h2>`+inb.map(p=>{const o=S.users[p.owner];return `<article class="card req">
     <div class="big-photo">${av(o,120)}<b style="font-size:18px">${esc(o.name)}</b>
-      <span class="meta">${ic("pin",14)}Knew you at ${where(p)}, around ${esc(p.from)}–${esc(p.to)}</span>
+      <span class="meta">${ic("pin",14)}Knew you at ${where(p)}, ${hasYears(p)?"around "+esc(years(p)):"(no years given)"}</span>
       <span class="meta">Listed you as "${esc(p.name)}"</span></div>
     <p class="fine">Saying yes shares your photo with them so they can confirm it's you. ${KITW} doesn't check anyone's identity, so only say yes if you want to hear from this person.</p>
     ${hasPhoto(u)?`<div class="btns"><button class="primary" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="accepted">Yes, I know them</button><button class="grey" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="ignored">Not now</button></div>`
@@ -706,11 +720,14 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <div class="hist">${(u.history||[]).map((h,i)=>`<div class="hist-row"><p class="hist-num">Place ${i+1}</p>
       <label class="f" for="h_place_${i}">Place and details<input id="h_place_${i}" data-h="${i}" data-f="place" value="${esc(h.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(h.place)}" id="kw_h_${i}" aria-live="polite">${kwLeft(h.place)}</span></label>
       <label class="f hc" for="h_city_${i}">City or town<input id="h_city_${i}" data-h="${i}" data-f="city" value="${esc(h.city)}" placeholder="e.g. Toronto"></label>
-      <label class="f" for="h_from_${i}">From<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.from)}"></label>
+      <label class="f" for="h_from_${i}">From (optional)<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.from)}"></label>
       <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.to)}"></label>
-      <button class="x" data-act="delHist" data-i="${i}" aria-label="Remove this place">×</button>${histReady(h)?"":`<p class="err hist-miss">${ic("pin",14)} Add ${[!String(h.place||"").trim()&&"a place",!String(h.city||"").trim()&&"a city",yr(h.from)===null&&yr(h.to)===null&&"years"].filter(Boolean).join(", ").replace(/, ([^,]*)$/," and $1")}. Nobody can find you here until it's filled in.</p>`}</div>`).join("")}</div>
+      <select class="era" id="h_era_${i}" data-era="${i}" aria-label="Pick roughly when for place ${i+1}">${eraOptions()}</select>
+      ${histReady(h)?(hasYears(h)?"":`<p class="fine hist-miss">${ic("pin",14)} Tip: adding years, even roughly, helps the right person find you.</p>`):`<p class="err hist-miss">${ic("pin",14)} Add ${[!String(h.place||"").trim()&&"a place",!String(h.city||"").trim()&&"a city"].filter(Boolean).join(" and ")}. Nobody can find you here until it's filled in.</p>`}
+      ${S.confirmHist===i?`<div class="hist-actions"><span class="fine">Delete Place ${i+1}?</span><button class="grey" data-act="cancelDelHist">Cancel</button><button class="del-btn" data-act="delHist" data-i="${i}">Yes, delete</button></div>`
+        :`<div class="hist-actions">${S.savedHist===i?`<span class="saved-note">${ic("check",16)}Saved</span>`:""}<button class="save-btn" data-act="saveHist" data-i="${i}">Save</button><button class="del-btn" data-act="askDelHist" data-i="${i}">Delete</button></div>`}</div>`).join("")}</div>
     <button class="grey" data-act="addHist" style="align-self:flex-start">Add a place</button>
-    <p class="fine"><button class="link inline" data-tab="example">See an example</button> · For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city and years match too.</p></div>
+    <p class="fine"><button class="link inline" data-tab="example">See an example</button> · For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city matches too (plus the years, when you've both added them).</p></div>
 
   <div class="card"><h2 class="ct">Privacy and safety</h2>
     <div class="toggle"><div><b>Signed up</b><p class="fine">${u.joined?"People who list you with a matching history can send you a request.":"No one can find you."}</p></div><button class="switch" role="switch" aria-checked="${!!u.joined}" aria-label="Signed up" data-act="${u.joined?"leave":"join"}"></button></div>
@@ -721,7 +738,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
 
   <div class="card"><h2 class="ct ct-wm">How ${KITW} protects you</h2><ul class="guards">
     ${["No search. You can't look anyone up by name.",
-       "The place, the city and the years all have to match.",
+       "The place and city have to match, and the years too when you've both added them.",
        `Year ranges are limited to ${MAX_SPAN} years, so no one can cast a wide net.`,
        "Only the person you're looking for sees your request. Nobody else ever sees your list.",
        "The person you're looking for decides. If you both list each other, you're connected right away.",
@@ -765,17 +782,17 @@ function act(a,el){const u=me();
   else if(a==="pause"){u.paused=!u.paused;}
   else if(a==="addPick"){const name=val("np_name"),place=val("np_place"),city=val("np_city");let f=parseInt(val("np_from")),t=parseInt(val("np_to"));
     S.draft={name,place,city,from:val("np_from"),to:val("np_to")};
-    if(!t&&f)t=f; if(f>t)[f,t]=[t,f];
+    if(!Number.isFinite(f))f=NaN;if(!Number.isFinite(t))t=NaN;if(isNaN(t)&&!isNaN(f))t=f;if(isNaN(f)&&!isNaN(t))f=t;if(f>t)[f,t]=[t,f];const noYears=isNaN(f);
     const locked=lockedSlots(u.id);
     if(!parts(name).first)S.err="Add the name you knew them by.";
     else if(!place)S.err="Add where you knew them. It's how we keep names private.";
     else if(place.split(",").filter(x=>x.trim()).length>MAX_KW)S.err=`Use up to ${MAX_KW} names or details for the place, separated by commas.`;
     else if(!city)S.err="Add the city or town. It's the second detail that has to match.";
-    else if(!f||f<1930||t>2026)S.err="Add roughly which years, like 1985 to 1989.";
-    else if(t-f>MAX_SPAN)S.err=`Keep it to ${MAX_SPAN} years or less. Pick the years you're most sure of.`;
+    else if(!noYears&&(f<1930||t>2026))S.err="Those years don't look right. Use four-digit years like 1985, or leave them blank.";
+    else if(!noYears&&t-f>MAX_SPAN)S.err=`Keep it to ${MAX_SPAN} years or less. Pick the years you're most sure of.`;
     else if(slotsUsed(u.id)>=MAX_PICKS)S.err=locked.length?`Your list is full. Removed spots start unlocking ${unlockDate(locked)}.`:"Your list is full. Remove someone to add another.";
     else if(namesOf(u).some(n=>fullSim(n,name)))S.err="That looks like your own name.";
-    else{S.picks.push({id:"p"+Date.now().toString(36),owner:u.id,name,place,city,from:f,to:t});S.err="";S.compose=false;S.draft={};}}
+    else{S.picks.push({id:"p"+Date.now().toString(36),owner:u.id,name,place,city,from:noYears?"":f,to:noYears?"":t});S.err="";S.compose=false;S.draft={};}}
   else if(a==="askDel"){S.confirmDel=el.dataset.id;}
   else if(a==="cancelDel"){S.confirmDel="";}
   else if(a==="delPick"){const id=el.dataset.id,p=S.picks.find(x=>x.id===id);if(p){S.removedAt=S.removedAt||{};S.removedAt[id]={owner:p.owner,at:Date.now()};}
@@ -802,7 +819,14 @@ function act(a,el){const u=me();
     const bl=document.getElementById("rep_block");if(bl&&bl.checked&&!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);
     S.connPanel=null;S.repErr="";S.flash=bl&&bl.checked?"Thanks. Your report was saved and they've been blocked.":"Thanks. Your report was saved for review.";}
   else if(a==="addHist"){u.history.push({place:"",city:"",from:"",to:""});}
-  else if(a==="delHist"){u.history.splice(+el.dataset.i,1);}
+  else if(a==="askDelHist"){S.confirmHist=+el.dataset.i;S.savedHist=null;save();render();return;}
+  else if(a==="cancelDelHist"){S.confirmHist=null;save();render();return;}
+  else if(a==="delHist"){u.history.splice(+el.dataset.i,1);S.confirmHist=null;S.savedHist=null;}
+  else if(a==="saveHist"){const i=+el.dataset.i,h=u.history[i];if(h){const g=id=>{const e=document.getElementById(id);return e?e.value:"";};
+      const num=v=>{const n=parseInt(v,10);return Number.isFinite(n)&&n>=1900&&n<=2100?n:"";};
+      h.place=g("h_place_"+i).trim();h.city=g("h_city_"+i).trim();h.from=num(g("h_from_"+i));h.to=num(g("h_to_"+i));}
+    S.confirmHist=null;S.savedHist=i;save();render();if(SY.bin&&SY.key)push();
+    clearTimeout(window.__savedT);window.__savedT=setTimeout(()=>{if(S.savedHist===i){S.savedHist=null;render();}},2500);return;}
   else if(a==="clearPhoto"){u.photo="";}
   save();render();if(a!=="reset"&&a!=="toggleShare"&&a!=="copyData")schedulePush();}
 const val=id=>{const e=document.getElementById(id);return e?e.value.trim():"";};
@@ -844,6 +868,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.targe
 document.addEventListener("change",e=>{const t=e.target,u=me();
   if(t.id==="gal_add"&&t.files&&t.files.length){addGallery([...t.files]);return;}
   if(t.id==="imp_file"&&t.files[0]){const r=new FileReader();r.onload=()=>{importText(String(r.result));save();render();};r.readAsText(t.files[0]);return;}
+  if(t.id==="np_era"&&t.value){const [a,b]=t.value.split("-");const f1=document.getElementById("np_from"),f2=document.getElementById("np_to");if(f1)f1.value=a;if(f2)f2.value=b;t.value="";return;}
+  if(t.dataset&&t.dataset.era!=null&&t.value){const h=me().history[+t.dataset.era];if(h){const [a,b]=t.value.split("-");h.from=+a;h.to=+b;}save();render();schedulePush();return;}
   if(t.id==="who"){S.current=t.value;S.err="";}
   else if(t.id==="me_name"){u.name=t.value.trim();}
   else if(t.id==="me_past"){u.past=t.value.split(",").map(s=>s.trim()).filter(Boolean);}
@@ -857,7 +883,9 @@ document.addEventListener("change",e=>{const t=e.target,u=me();
   else if(t.dataset.h!=null){const h=u.history[+t.dataset.h];h[t.dataset.f]=(t.dataset.f==="place"||t.dataset.f==="city")?t.value.trim():(n=>Number.isFinite(n)&&n>=1900&&n<=2100?n:"")(parseInt(t.value,10));}
   else if(t.id==="me_photo"&&t.files[0]){openCrop(t.files[0]);return;}
   else return;
-  save();render();if(t.id!=="who")schedulePush();});
+  /* typing fields save quietly: re-drawing the page here would steal the next tap */
+  const quiet=t.dataset.h!=null||["me_name","me_past","me_never","me_by"].includes(t.id);
+  save();if(!quiet)render();if(t.id!=="who")schedulePush();});
 /* ---------- photo positioner ---------- */
 const V=280; let CR=null;
 const cropEl=document.getElementById("crop"),cropView=document.getElementById("cropView"),cropCv=document.getElementById("cropCanvas"),cropZoom=document.getElementById("cropZoom");
