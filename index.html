@@ -197,6 +197,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .bday{border:0;margin:0;padding:0;display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:8px;min-width:0}
 .bday legend{padding:0;margin-bottom:4px;font-size:13px;font-weight:600;color:var(--muted)}
 .hist-actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.del-btn:disabled{opacity:.45;cursor:default;filter:none}
 .save-btn:disabled{opacity:.45;cursor:default;filter:none}
 .save-btn{background:var(--ok);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
 .del-btn{background:var(--danger);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
@@ -805,9 +806,13 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     ${(u.blocked||[]).length?`<b>Blocked</b>`+u.blocked.map(id=>S.users[id]?`<div class="toggle"><span>${esc(S.users[id].name)}</span><button class="link" data-act="unblock" data-id="${esc(id)}">Unblock</button></div>`:"").join(""):""}</div>
 
   <div class="card"><h2 class="ct">Delete my profile</h2>
-    ${S.confirmDelMe?`<div class="notice danger">${ic("trash",18)}<div class="col-tight"><b>Delete your profile for good?</b>
+    ${S.confirmDelMe===2?`<div class="notice danger">${ic("trash",18)}<div class="col-tight"><b>Last check: this deletes everything</b>
+      <span>Your profile, photos, places, list, requests, questions, messages and connections will be gone for good. There's no way to get them back.</span>
+      <label class="f" for="del_type">Type DELETE to confirm<input id="del_type" autocomplete="off" autocapitalize="characters" placeholder="DELETE"></label>
+      <div class="hist-actions"><button class="grey" data-act="cancelDelMe">Cancel</button><button class="del-btn" data-act="deleteMe" id="del_final" disabled>Delete everything</button></div></div></div>`
+    :S.confirmDelMe?`<div class="notice danger">${ic("trash",18)}<div class="col-tight"><b>Delete your profile for good?</b>
       <span>Your name, photos, places, your list, requests and messages are all erased, and no one can find or message you again. This can't be undone.</span>
-      <div class="hist-actions"><button class="grey" data-act="cancelDelMe">Cancel</button><button class="del-btn" data-act="deleteMe">Yes, delete</button></div></div></div>`
+      <div class="hist-actions"><button class="grey" data-act="cancelDelMe">Cancel</button><button class="del-btn" data-act="askDelMe2">Yes, delete</button></div></div></div>`
     :`<p class="fine">Permanently erase everything about you from ${KITW}. If you just want a break, use Pause being found instead.</p>
     <div class="hist-actions"><button class="del-btn" data-act="askDelMe">Delete profile</button></div>`}</div>
 
@@ -908,7 +913,8 @@ function act(a,el){const u=me();
   else if(a==="delHist"){u.history.splice(+el.dataset.i,1);S.confirmHist=null;S.savedHist=null;}
   else if(a==="askDelMe"){S.confirmDelMe=true;}
   else if(a==="cancelDelMe"){S.confirmDelMe=false;}
-  else if(a==="deleteMe"){deleteProfile(u.id);}
+  else if(a==="askDelMe2"){S.confirmDelMe=2;save();render();const i=document.getElementById("del_type");if(i)i.focus();return;}
+  else if(a==="deleteMe"){const i=document.getElementById("del_type");if(S.confirmDelMe!==2||!i||i.value.trim().toUpperCase()!=="DELETE")return;deleteProfile(u.id);}
   else if(a==="saveMe"){const g=id=>{const e=document.getElementById(id);return e?e.value:"";};
     u.name=g("me_name").trim();u.past=g("me_past").split(",").map(x=>x.trim()).filter(Boolean);
     u.bm=g("me_bm");u.bd=g("me_bd");u.by=g("me_by").replace(/\D/g,"").slice(0,4);u.gender=g("me_gender");
@@ -1018,6 +1024,7 @@ document.addEventListener("keydown",e=>{const t=e.target;if(!t.classList||!t.cla
   t.dispatchEvent(new Event("input",{bubbles:true}));t.dispatchEvent(new Event("change",{bubbles:true}));});
 document.addEventListener("input",e=>{const t=e.target;let el=null;
   if(ME_FIELDS.includes(t.id))markDirty("me");else if(t.id==="me_never")markDirty("nv");
+  else if(t.id==="del_type"){const b=document.getElementById("del_final");if(b)b.disabled=t.value.trim().toUpperCase()!=="DELETE";}
   if(t.classList&&t.classList.contains("yr")){const v=t.value.replace(/\D/g,"").slice(0,4);if(v!==t.value)t.value=v;}
   if(t.id==="np_place")el=document.getElementById("kw_np");
   else if(t.dataset&&t.dataset.f==="place"&&t.dataset.h!=null)el=document.getElementById("kw_h_"+t.dataset.h);
