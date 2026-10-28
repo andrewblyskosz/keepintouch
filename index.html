@@ -640,7 +640,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id&&!pic
       ${S.err?`<p class="err">${esc(S.err)}</p>`:""}
       <div class="btns"><button class="primary" data-act="addPick" ${used>=MAX_PICKS?"disabled":""}>Add to my list</button><button class="grey" data-act="compose">Cancel</button></div></div>`:""}
     <div class="divider"></div>
-    <div class="compose-foot">${ic("shield",18)}<span>Names aren't searchable. The place and city have to match, and the years too if you both add them. ${used} of ${MAX_PICKS} spots used${locked.length?`, ${locked.length} locked until ${unlockDate(locked)}`:""}.</span></div>
+    <div class="compose-foot">${ic("shield",18)}<span>Names alone aren't searchable. The place and city have to match, and the years too if you both add them. ${used} of ${MAX_PICKS} spots used${locked.length?`, ${locked.length} locked until ${unlockDate(locked)}`:""}.</span></div>
   </div>
   ${mine.length?mine.slice().reverse().map(p=>{const st=pickStatus(p);return `<article class="card">
     <div class="post-head">${ghost()}<div class="who"><b>${esc(p.name)}</b><span class="meta">${ic("pin",14)}${where(p)} · ${esc(years(p))}</span></div><span class="status ${st.cls}">${esc(st.txt)}</span></div>
