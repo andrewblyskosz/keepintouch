@@ -1,21 +1,21 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>[hidden]{display:none!important}img{max-width:100%}body{margin:0}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>kimpi</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: social-feed shell — dark test strip, sticky white top bar with icon tabs, one 680px column of white cards on grey */
 :root{
   --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F0F2F5; --hover:#E4E8EC; --ink:#14202C; --muted:#5A6573; --line:#DCE1E7;
-  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --mark-tile:transparent; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
+  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --note:#E3F3E6; --note-line:#9CCFA7; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
   --lb-bg:rgba(8,12,11,.97); --lb-ink:#FFFFFF; --lb-muted:#B8C2BF; --strip:#22282A; --strip-ink:#E9EEEC; --strip-muted:#A9B4B0; --strip-line:#465052; --strip-field:#30383A;
   --font:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --alert:#F0625F; --warn:#E58A6F;
   --strip:#0A0D0C; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --alert:#F0625F; --warn:#E58A6F;
   --strip:#0A0D0C; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;padding-block:0 40px}
@@ -48,9 +48,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bar-bg);color:var(--bar-ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
 .bar-in{max-width:712px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .bar-top{display:flex;align-items:center;gap:8px;height:54px}
-.wordmark{font-family:"Nunito",var(--font);font-size:30px;font-weight:900;letter-spacing:.03em;color:var(--bar-brand);line-height:1}
 .wm{height:44px;width:auto;display:block;flex:none}
-.logo-mark{width:40px;height:40px;border-radius:10px;background:var(--mark-tile);padding:2px;display:block;flex:none}
 .bar-sub{font-size:13px;color:var(--bar-muted);padding-top:6px}
 .bar-me{margin-left:auto;background:transparent;padding:0;border-radius:50%;display:flex}
 .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -76,7 +74,6 @@ h2{margin:0;font-size:20px;font-weight:700}
 .pill{flex:1;text-align:left;background:var(--sunk);color:var(--muted);border-radius:999px;padding:10px 16px;font-size:16px;min-width:0}
 .pill:hover{background:var(--hover)}
 .compose-form{display:flex;flex-direction:column;gap:10px}
-.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
 .compose-foot{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:13px}
 .compose-foot svg{flex:none;color:var(--brand);margin-top:1px}
 .post-head{display:flex;gap:10px;align-items:center}
@@ -90,10 +87,9 @@ h2{margin:0;font-size:20px;font-weight:700}
 .act-btn:hover{background:var(--hover)}
 .status{flex:none;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;align-self:center}
 .s-wait{background:var(--brass);color:#14202C}
-.s-check{background:var(--brass-soft);color:var(--ink)}
+.s-check{background:var(--note);color:var(--ink);box-shadow:inset 0 0 0 1px var(--note-line)}
 .s-conn{background:var(--brand-soft);color:var(--brand)}
 .s-new{background:var(--brass);color:#1B1407}
-.req-row{display:flex;gap:12px;align-items:flex-start}
 .btns{display:flex;gap:8px;flex-wrap:wrap}
 .btns.center{justify-content:center}
 .primary{background:var(--brand);color:var(--brand-ink);font-weight:600;padding:9px 14px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
@@ -122,7 +118,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 
 /* profile */
 .profile{padding:0;overflow:hidden;gap:0}
-.cover{height:150px;background-color:var(--cover);background-image:radial-gradient(var(--brand-soft) 1.3px,transparent 1.6px);background-size:18px 18px}
+.cover{position:relative;overflow:hidden;height:150px;background-color:var(--cover);background-image:radial-gradient(var(--brand-soft) 1.3px,transparent 1.6px);background-size:18px 18px}
 .prof-main{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:0 16px 16px;margin-top:-71px}
 .prof-av{position:relative;padding:5px;border-radius:50%;background:linear-gradient(to bottom,var(--brass) 50%,var(--cover) 50%)}
 .prof-av .av{border:0;display:flex}
@@ -135,7 +131,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .hist-row .hc{grid-column:2/span 2}
 .hist-row+.hist-row{border-top:1px solid var(--line);padding-top:10px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.notice{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--brass-soft);color:var(--ink);border-radius:8px;padding:10px 12px;font-size:14px}
+.notice{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;background:var(--note);color:var(--ink);border-radius:8px;padding:10px 12px;font-size:14px}
 .notice svg{flex:none}
 .notice span{flex:1 1 180px}
 .inline-fix{display:flex;gap:8px}
@@ -149,7 +145,17 @@ h2{margin:0;font-size:20px;font-weight:700}
 .guards li{display:flex;gap:10px;align-items:flex-start}
 .guards svg{flex:none;color:var(--brand);margin-top:1px}
 
-.cover{position:relative;overflow:hidden}
+.face-tip{text-align:left;max-width:460px}
+.splash{position:fixed;inset:0;z-index:70;background:rgba(8,14,22,.72);display:flex;align-items:center;justify-content:center;padding:16px;animation:spIn .25s ease-out}
+.splash-card{background:var(--surface);color:var(--ink);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:28px 22px 22px;max-width:380px;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;border-top:5px solid var(--brass);animation:spPop .35s cubic-bezier(.2,1.3,.4,1)}
+.splash-pair{display:flex;align-items:center;gap:0;margin-bottom:6px}
+.splash-pair .av{border:4px solid var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.splash-link{position:relative;z-index:1;width:44px;height:44px;border-radius:50%;background:var(--brass);color:#1B1407;display:flex;align-items:center;justify-content:center;border:4px solid var(--surface);margin-inline:-14px}
+.splash-kick{margin:0;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
+.splash-title{margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em}
+.splash .btns{width:100%;margin-top:6px}.splash .btns button{flex:1}
+@keyframes spIn{from{opacity:0}}@keyframes spPop{from{transform:scale(.85);opacity:0}}
+@media (prefers-reduced-motion:reduce){.splash,.splash-card{animation:none}}
 .net{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ct-wm{display:flex;align-items:center;gap:.3em;flex-wrap:wrap}
 .wm-inline{height:1.35em;width:auto;display:inline-block;vertical-align:-.3em;margin:0 .08em}
@@ -163,11 +169,11 @@ h2{margin:0;font-size:20px;font-weight:700}
 .terms ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
 .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;cursor:pointer}
 .check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--brand);padding:0}
-.notice.warn{background:var(--brass-soft);box-shadow:inset 0 0 0 1px var(--brass)}
+.notice.danger{background:color-mix(in srgb,var(--danger) 12%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--danger) 55%,transparent)}
+.notice.warn{background:var(--note);box-shadow:inset 0 0 0 1px var(--note-line)}
 .notice .col-tight{display:flex;flex-direction:column;gap:6px;flex:1 1 200px;min-width:0}
 .notice .col-tight .btns{margin-top:4px}
 .notice .col-tight>*{flex:none}
-.notice{align-items:flex-start}
 .notice>svg{margin-top:2px}
 .notice.tip{font-size:13px}
 .bubble-wrap{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:85%}
@@ -191,6 +197,7 @@ h2{margin:0;font-size:20px;font-weight:700}
 .bday{border:0;margin:0;padding:0;display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:8px;min-width:0}
 .bday legend{padding:0;margin-bottom:4px;font-size:13px;font-weight:600;color:var(--muted)}
 .hist-actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.save-btn:disabled{opacity:.45;cursor:default;filter:none}
 .save-btn{background:var(--ok);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
 .del-btn{background:var(--danger);color:#FFFFFF;font-weight:600;padding:8px 18px;border-radius:6px}
 .save-btn:hover,.del-btn:hover{filter:brightness(1.08)}
@@ -237,7 +244,6 @@ h2{margin:0;font-size:20px;font-weight:700}
 .crop-view canvas{width:100%;height:100%;display:block}
 input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--brand)}
 @media (prefers-reduced-motion:reduce){.switch::after{transition:none}}
-@media (max-width:380px){.grid3{grid-template-columns:1fr 1fr}.grid3 .wide{grid-column:1/-1}}
 @media (max-width:360px){.grid2{grid-template-columns:1fr}}
 </style>
 
@@ -290,21 +296,18 @@ async function binFetch(method,body){
       :r.status===413?"The data is too big for your JSONBin plan. Remove some photos and try again."
       :"JSONBin said: "+(t.slice(0,140)||r.status));}
   return r.json();}
-async function pull(){if(!SY.bin||!SY.key||syncing)return;syncing=true;syncMsg="Syncing…";render();
-  try{const d=await binFetch("GET");if(isOurs(d))merge(d);save();syncMsg="Synced at "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});}
+async function syncNow(write){if(!SY.bin||!SY.key||(!write&&syncing))return;syncing=true;syncMsg=write?"Saving…":"Syncing…";render();
+  try{const d=await binFetch("GET");if(isOurs(d))merge(d);if(write)await binFetch("PUT",payload());save();
+    syncMsg=(write?"Saved":"Synced")+" at "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});}
   catch(e){syncMsg=e.message.includes("Failed to fetch")?"Can't reach JSONBin. Check your connection"+(onClaude?", and open the downloaded or GitHub copy instead.":"."):e.message;}
   syncing=false;render();}
-async function push(){if(!SY.bin||!SY.key)return;syncing=true;syncMsg="Saving…";render();
-  try{const d=await binFetch("GET");if(isOurs(d))merge(d);
-    await binFetch("PUT",payload());save();syncMsg="Saved at "+new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});}
-  catch(e){syncMsg=e.message.includes("Failed to fetch")?"Can't reach JSONBin. Check your connection"+(onClaude?", and open the downloaded or GitHub copy instead.":"."):e.message;}
-  syncing=false;render();}
+const pull=()=>syncNow(false), push=()=>syncNow(true);
 const schedulePush=()=>{if(!SY.bin||!SY.key)return;clearTimeout(pushTimer);pushTimer=setTimeout(push,1200);};
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")pull();});
 const MAX_PICKS=20, MAX_SPAN=6, COOL=30*864e5;
 const hasPhoto=u=>!!(u&&safePhoto(u.photo));
 const lockedSlots=uid=>Object.values(S.removedAt||{}).filter(r=>r&&r.owner===uid&&r.at>(S.coolClear||0)&&Date.now()-r.at<COOL);
-const slotsUsed=uid=>S.picks.filter(p=>p.owner===uid).length+lockedSlots(uid).length;
+const slotsUsed=uid=>S.picks.filter(p=>p.owner===uid&&!pickDone(p)).length+lockedSlots(uid).length;
 const unlockDate=l=>new Date(Math.min(...l.map(r=>r.at))+COOL).toLocaleDateString(undefined,{month:"short",day:"numeric"});
 const spanOk=p=>!hasYears(p)||histSpan(p)[1]-histSpan(p)[0]<=MAX_SPAN;
 const pickReady=(p,o)=>!!p.city&&spanOk(p)&&hasPhoto(o);
@@ -360,9 +363,22 @@ function inbox(uid){const out=[];for(const p of S.picks){if(p.owner===uid)contin
   if(pickTargets(p,uid)&&!isMutual(p,uid)&&!S.decisions[k]&&!connectedWith(uid,p.owner))out.push(p);}return out;}
 function toConfirm(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id;
   if(S.decisions[k]==="accepted"&&!S.confirms[k]&&!isMutual(p,c.id))out.push({p,c});}return out;}
+const pickDone=p=>{const cs=connectionsOf(p.owner);if(!cs.length)return false;const hit=candidates(p).map(c=>c.id);return cs.some(c=>{const o=S.users[c.other];return o&&(hit.includes(o.id)||(!!parts(p.name).last&&nameMatch(p.name,o)));});};
+function awaitingConfirm(uid){return S.picks.filter(p=>p.owner!==uid&&S.decisions[p.id+"|"+uid]==="accepted"&&!S.confirms[p.id+"|"+uid]&&!connectedWith(uid,p.owner)&&S.users[p.owner]);}
+const Q_MAX=2;
+const qKey=k=>"q:"+k;
+const qThread=k=>(S.messages||{})[qKey(k)]||[];
+const qid=k=>"q_"+k.replace(/[^a-z0-9_]/gi,"_");
+function qPending(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id,t=qThread(k);
+  if(t.length&&t[t.length-1].from===c.id&&!S.decisions[k]&&!blockedBetween(S.users[uid],c))out.push({p,c,k});}return out;}
+function qaView(k,viewer){const t=qThread(k);if(!t.length)return "";
+  return `<div class="comments">${t.map(m=>`<div class="cmt"><div class="bubble"><b>${m.from===viewer?"You":"Them"}</b><span>${esc(m.text)}</span></div></div>`).join("")}</div>`;}
+function qaInput(k,act,ph){const e=S.qErr&&S.qErr.k===k?`<p class="err">${esc(S.qErr.msg)}</p>`:"";
+  return `${e}<div class="cmt-input"><div class="pill-input"><input id="${qid(k)}" placeholder="${ph}" aria-label="${ph}" maxlength="300"></div><button class="icon-btn" data-act="${act}" data-k="${esc(k)}" aria-label="Send">${ic("send",18)}</button></div>`;}
 function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(!spanOk(p))return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
   const conn=cs.find(c=>connectedWith(p.owner,c.id));if(conn)return{cls:"s-conn",txt:"Connected with "+conn.name};
   if(cs.some(c=>S.decisions[p.id+"|"+c.id]==="accepted"&&!S.confirms[p.id+"|"+c.id]))return{cls:"s-check",txt:"Check a photo"};
+  if(qPending(p.owner).some(x=>x.p.id===p.id))return{cls:"s-new",txt:"Question for you"};
   return{cls:"s-wait",txt:"Waiting"};}
 
 /* ---------- rendering ---------- */
@@ -396,8 +412,9 @@ const ghost=(s=40)=>`<span class="av ghost" style="width:${s}px;height:${s}px;fo
 const years=h=>{if(!hasYears(h))return "years not given";const [a,b]=histSpan(h);return a===b?`${a}`:`${a}–${b}`;};
 const where=x=>esc(x.place)+(x.city?", "+esc(x.city):"");
 const firstName=u=>{const f=parts(u.name||"").first;return f?f[0].toUpperCase()+f.slice(1):"";};
-const KITW=`<svg class="wm-inline" viewBox="25 85 2550 1050" role="img" aria-label="kimpi"><path d="M365 900 211 644 364 411H555L365 674L370 610L565 900ZM51 900V171H225V900Z M890 900V411H1064V900ZM1197 900V617Q1197 586 1178.0 568.5Q1159 551 1131 551Q1111 551 1096.0 559.0Q1081 567 1072.5 581.5Q1064 596 1064 617L996 590Q996 531 1022.0 489.0Q1048 447 1092.0 424.0Q1136 401 1192 401Q1242 401 1282.5 424.5Q1323 448 1347.0 490.0Q1371 532 1371 589V900ZM1504 900V617Q1504 586 1485.0 568.5Q1466 551 1438 551Q1419 551 1403.5 559.0Q1388 567 1379.5 581.5Q1371 596 1371 617L1269 612Q1271 546 1298.0 499.0Q1325 452 1372.5 426.5Q1420 401 1480 401Q1537 401 1582.0 425.0Q1627 449 1652.5 494.5Q1678 540 1678 603V900Z M2060 910Q2013 910 1973.0 893.0Q1933 876 1907.0 846.5Q1881 817 1875 778V540Q1881 501 1907.5 469.5Q1934 438 1973.5 419.5Q2013 401 2060 401Q2131 401 2185.0 433.5Q2239 466 2269.5 524.0Q2300 582 2300 656Q2300 729 2269.5 786.5Q2239 844 2185.0 877.0Q2131 910 2060 910ZM1769 1107V411H1943V534L1914 652L1939 771V1107ZM2027 755Q2056 755 2078.0 742.0Q2100 729 2112.0 706.5Q2124 684 2124 655Q2124 626 2112.0 604.0Q2100 582 2078.0 569.0Q2056 556 2028 556Q2001 556 1979.0 568.5Q1957 581 1945.0 603.5Q1933 626 1933 655Q1933 684 1945.0 706.5Q1957 729 1978.5 742.0Q2000 755 2027 755Z" style="fill:var(--brand)"/><path d="M614 900 V498.0 A87.0 87.0 0 0 1 788 498.0 V900 Z" style="fill:var(--brand)" transform="rotate(9 701.0 900)"/><path d="M2372 900 V498.0 A87.0 87.0 0 0 1 2546 498.0 V900 Z" style="fill:var(--brand)" transform="rotate(-9 2459.0 900)"/><path d="M800 278Q1580 -52 2360 278" fill="none" style="stroke:var(--brass)" stroke-width="44" stroke-linecap="round"/><circle cx="800" cy="278" r="74" style="fill:var(--surface);stroke:var(--brass)" stroke-width="38"/><circle cx="2360" cy="278" r="74" style="fill:var(--surface);stroke:var(--brass)" stroke-width="38"/></svg>`;
-const LOGO=()=>`<svg class="wm" viewBox="25 85 2550 1050" role="img" aria-label="kimpi"><path d="M365 900 211 644 364 411H555L365 674L370 610L565 900ZM51 900V171H225V900Z M890 900V411H1064V900ZM1197 900V617Q1197 586 1178.0 568.5Q1159 551 1131 551Q1111 551 1096.0 559.0Q1081 567 1072.5 581.5Q1064 596 1064 617L996 590Q996 531 1022.0 489.0Q1048 447 1092.0 424.0Q1136 401 1192 401Q1242 401 1282.5 424.5Q1323 448 1347.0 490.0Q1371 532 1371 589V900ZM1504 900V617Q1504 586 1485.0 568.5Q1466 551 1438 551Q1419 551 1403.5 559.0Q1388 567 1379.5 581.5Q1371 596 1371 617L1269 612Q1271 546 1298.0 499.0Q1325 452 1372.5 426.5Q1420 401 1480 401Q1537 401 1582.0 425.0Q1627 449 1652.5 494.5Q1678 540 1678 603V900Z M2060 910Q2013 910 1973.0 893.0Q1933 876 1907.0 846.5Q1881 817 1875 778V540Q1881 501 1907.5 469.5Q1934 438 1973.5 419.5Q2013 401 2060 401Q2131 401 2185.0 433.5Q2239 466 2269.5 524.0Q2300 582 2300 656Q2300 729 2269.5 786.5Q2239 844 2185.0 877.0Q2131 910 2060 910ZM1769 1107V411H1943V534L1914 652L1939 771V1107ZM2027 755Q2056 755 2078.0 742.0Q2100 729 2112.0 706.5Q2124 684 2124 655Q2124 626 2112.0 604.0Q2100 582 2078.0 569.0Q2056 556 2028 556Q2001 556 1979.0 568.5Q1957 581 1945.0 603.5Q1933 626 1933 655Q1933 684 1945.0 706.5Q1957 729 1978.5 742.0Q2000 755 2027 755Z" style="fill:var(--bar-ink)"/><path d="M614 900 V498.0 A87.0 87.0 0 0 1 788 498.0 V900 Z" style="fill:var(--bar-ink)" transform="rotate(9 701.0 900)"/><path d="M2372 900 V498.0 A87.0 87.0 0 0 1 2546 498.0 V900 Z" style="fill:var(--bar-ink)" transform="rotate(-9 2459.0 900)"/><path d="M800 278Q1580 -52 2360 278" fill="none" style="stroke:var(--bar-accent)" stroke-width="44" stroke-linecap="round"/><circle cx="800" cy="278" r="74" style="fill:var(--bar-bg);stroke:var(--bar-accent)" stroke-width="38"/><circle cx="2360" cy="278" r="74" style="fill:var(--bar-bg);stroke:var(--bar-accent)" stroke-width="38"/></svg>`;
+const wordmark=(cls,ink,acc,hole)=>`<svg class="${cls}" viewBox="25 85 2550 1050" role="img" aria-label="kimpi"><path d="M365 900 211 644 364 411H555L365 674L370 610L565 900ZM51 900V171H225V900Z M890 900V411H1064V900ZM1197 900V617Q1197 586 1178.0 568.5Q1159 551 1131 551Q1111 551 1096.0 559.0Q1081 567 1072.5 581.5Q1064 596 1064 617L996 590Q996 531 1022.0 489.0Q1048 447 1092.0 424.0Q1136 401 1192 401Q1242 401 1282.5 424.5Q1323 448 1347.0 490.0Q1371 532 1371 589V900ZM1504 900V617Q1504 586 1485.0 568.5Q1466 551 1438 551Q1419 551 1403.5 559.0Q1388 567 1379.5 581.5Q1371 596 1371 617L1269 612Q1271 546 1298.0 499.0Q1325 452 1372.5 426.5Q1420 401 1480 401Q1537 401 1582.0 425.0Q1627 449 1652.5 494.5Q1678 540 1678 603V900Z M2060 910Q2013 910 1973.0 893.0Q1933 876 1907.0 846.5Q1881 817 1875 778V540Q1881 501 1907.5 469.5Q1934 438 1973.5 419.5Q2013 401 2060 401Q2131 401 2185.0 433.5Q2239 466 2269.5 524.0Q2300 582 2300 656Q2300 729 2269.5 786.5Q2239 844 2185.0 877.0Q2131 910 2060 910ZM1769 1107V411H1943V534L1914 652L1939 771V1107ZM2027 755Q2056 755 2078.0 742.0Q2100 729 2112.0 706.5Q2124 684 2124 655Q2124 626 2112.0 604.0Q2100 582 2078.0 569.0Q2056 556 2028 556Q2001 556 1979.0 568.5Q1957 581 1945.0 603.5Q1933 626 1933 655Q1933 684 1945.0 706.5Q1957 729 1978.5 742.0Q2000 755 2027 755Z" style="fill:${ink}"/><path d="M614 900 V498.0 A87.0 87.0 0 0 1 788 498.0 V900 Z" style="fill:${ink}" transform="rotate(9 701.0 900)"/><path d="M2372 900 V498.0 A87.0 87.0 0 0 1 2546 498.0 V900 Z" style="fill:${ink}" transform="rotate(-9 2459.0 900)"/><path d="M800 278Q1580 -52 2360 278" fill="none" style="stroke:${acc}" stroke-width="44" stroke-linecap="round"/><circle cx="800" cy="278" r="74" style="fill:${hole};stroke:${acc}" stroke-width="38"/><circle cx="2360" cy="278" r="74" style="fill:${hole};stroke:${acc}" stroke-width="38"/></svg>`;
+const KITW=wordmark("wm-inline","var(--brand)","var(--brass)","var(--surface)");
+const LOGO=()=>wordmark("wm","var(--bar-ink)","var(--bar-accent)","var(--bar-bg)");
 
 /* clean-up of the old sample people (runs on every phone, and through sync) */
 const OLD_PLACES=["Etobicoke Collegiate","CBC Animation"];
@@ -459,14 +476,16 @@ function render(){
   
   const body=S.tab==="terms"?termsPage():S.tab==="example"?examplePage():(!u.agreed&&S.tab!=="me")?agreeGate():!u.joined&&S.tab!=="me"?notJoined():(views[S.tab]||people)();
   const reqCount=(u.joined&&u.agreed)?inbox(u.id).length+toConfirm(u.id).length:0;
+  const qCount=(u.joined&&u.agreed)?qPending(u.id).length:0;
+  S.splashed=S.splashed||{};const splashC=(u.joined&&u.agreed)?connectionsOf(u.id).find(c=>!(S.splashed[u.id]||[]).includes(c.pk)):null;
   const newCount=(u.joined&&u.agreed)?connectionsOf(u.id).filter(c=>!((S.seen||{})[u.id]||[]).includes(c.pk)).length:0;
   document.getElementById("app").innerHTML=`${strip(u)}
   <header class="bar"><div class="bar-in">
     <div class="bar-top">${LOGO()}<span class="bar-sub" style="letter-spacing:.14em;font-size:10px;white-space:nowrap;line-height:1.3">PEOPLE FROM BACK THEN</span>
       <button class="bar-me" data-tab="me" aria-label="Your profile">${av(u,38)}</button></div>
-    <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}${k==="requests"&&reqCount?`<span class="badge">${reqCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
+    <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}${k==="people"&&qCount?`<span class="badge">${qCount}</span>`:""}${k==="requests"&&reqCount?`<span class="badge">${reqCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
   </div></header>
-  <main class="main"><div class="col">${body}</div>${footer()}</main>${viewer()}`;
+  <main class="main"><div class="col">${body}</div>${footer()}</main>${viewer()}${splashC?splash(splashC):""}`;
 }
 
 function strip(u){
@@ -526,6 +545,7 @@ function agreeGate(){const u=me();return `<div class="card">
     <li>${ic("users",18)}<span>${KITW} helps people who already knew each other reconnect. It isn't a dating or meeting service.</span></li>
     <li>${ic("chat",18)}<span>${KITW} is for the first hello only. Staying in touch afterwards happens outside ${KITW}, in whatever way the two of you choose.</span></li>
     <li>${ic("shield",18)}<span>${KITW} doesn't verify identities or run background checks. Matches are based only on what people enter.</span></li>
+    <li>${ic("shield",18)}<span>Knowing facts about you isn't proof someone knew you. Details can be found on Facebook, LinkedIn and elsewhere online.</span></li>
     <li>${ic("check",18)}<span>You decide who to connect with. Anything you share, and any contact or meeting after a connection, is your own responsibility.</span></li>
     <li>${ic("lock",18)}<span>Don't use ${KITW} to contact someone who has cut ties with you, or anyone a court order says you must not contact.</span></li></ul>
   <label class="check" for="agree_ck"><input id="agree_ck" type="checkbox"><span>I'm 18 or older, and I agree to the <button class="link inline" data-tab="terms">Terms of Use</button>.</span></label>
@@ -541,6 +561,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   ${sec("t-resp","Your choices are your responsibility",`<ul>
     <li>${KITW} never connects anyone without both people agreeing. You decide whether to send a request or accept one, and only the person you're looking for ever sees your request.</li>
     <li>Any messages, sharing of personal details, calls, meetings or relationships that follow a connection are solely between the people involved, and at their own risk.</li>
+    <li>${KITW} can't confirm that someone really knew you. A person could gather details about you from social media or other public sources and use them to seem familiar. Correct answers to questions are not proof of identity, and ${KITW} is not responsible for anyone who misrepresents who they are.</li>
     <li>${KITW} is not responsible for the conduct of any user, online or offline.</li></ul>`)}
   ${sec("t-rules",`Rules for using ${KITW}`,`<ul>
     <li>You must be 18 or older.</li>
@@ -597,19 +618,19 @@ function notJoined(){const u=me();return `<div class="card empty">${av(u,72)}
 
 const photoNotice=(text,btn)=>`<div class="notice">${ic("camera",18)}<span>${text}</span><button class="grey" data-tab="me">${btn}</button></div>`;
 
-function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);const F=firstName(u);
+function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id&&!pickDone(p));const F=firstName(u);
   const open=S.compose||!!S.err;const d=S.draft||{};const locked=lockedSlots(u.id);const used=slotsUsed(u.id);
   return `<div class="card">
     <div class="compose-row">${av(u)}<button class="pill" data-act="compose" aria-expanded="${open}">Who do you miss${F?", "+esc(F):""}?</button></div>
     ${!(u.history||[]).some(histReady)?`<div class="notice">${ic("pin",18)}<span>Add at least one place and its city on your Profile, so people from your past can find you.</span><button class="grey" data-tab="me">Add a place</button></div>`:""}
     ${!hasPhoto(u)?photoNotice("Add a profile photo so the person you're looking for can see it's really you. Your list isn't sent until you do.","Add photo"):""}
     ${open?`<div class="compose-form">
-      <label class="f" for="np_name">Name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
+      <label class="f" for="np_name">First and last name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
       <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(d.place)}" id="kw_np" aria-live="polite">${kwLeft(d.place)}</span></label>
         <label class="f" for="np_city">City or town<input id="np_city" value="${esc(d.city)}" placeholder="e.g. Toronto"></label></div>
       <p class="fine">Add other names or details for the place, separated by commas (up to ${MAX_KW}), like the school's nickname, a campus, a team or a department. Only one has to match. <button class="link inline" data-tab="example">See an example</button></p>
-      <div class="grid2"><label class="f" for="np_from">From (optional)<input id="np_from" type="number" inputmode="numeric" value="${esc(d.from)}" placeholder="Year" min="1930" max="2026"></label>
-        <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" type="number" inputmode="numeric" value="${esc(d.to)}" placeholder="Year" min="1930" max="2026"></label></div>
+      <div class="grid2"><label class="f" for="np_from">From (optional)<input id="np_from" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" value="${esc(d.from)}" placeholder="Year"></label>
+        <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" value="${esc(d.to)}" placeholder="Year"></label></div>
       <select id="np_era" aria-label="Pick roughly when">${eraOptions()}</select>
       <p class="fine">Years are optional. If you remember them, they help the right person find you. From and To can be at most ${MAX_SPAN} years apart.</p>
       ${S.err?`<p class="err">${esc(S.err)}</p>`:""}
@@ -624,6 +645,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id);cons
     ${st.txt==="Add your photo to send"?`<p class="post-text">This won't be sent until you add a profile photo.</p>`:""}
     ${st.cls==="s-wait"?`<p class="post-text">${ic("lock",14)} Nobody else can see your list. If ${esc(p.name.split(" ")[0]||"they")} has joined and the place and city match (and the years, if you both gave them), they'll get a request with your name and photo. If they say yes, you'll be connected. If they say no, you'll simply keep waiting.</p>`:""}
     ${st.txt==="Check a photo"?`<p class="post-text">Someone said yes. Open Requests to check their photo.</p>`:""}
+    ${qPending(p.owner).filter(x=>x.p.id===p.id).map(({k})=>`<p class="post-text">${ic("chat",14)} Someone who may be ${esc(p.name.split(" ")[0]||"them")} hasn't decided yet and asked you a question first. Your answer goes only to them.</p>${qaView(k,p.owner)}${qaInput(k,"qReply","Write your answer…")}<p class="fine">Don't share a phone number, email, address or anything about money here.</p>`).join("")}
     ${S.confirmDel===p.id?`<div class="notice">${ic("lock",18)}<span>Removing locks this spot for 30 days, so lists can't be cycled.</span><div class="btns"><button class="primary" data-act="cancelDel">Keep</button><button class="grey" data-act="delPick" data-id="${esc(p.id)}">Remove</button></div></div>`
       :`<div class="actions"><button class="act-btn" data-act="askDel" data-id="${esc(p.id)}">${ic("trash",18)}Remove</button></div>`}</article>`;}).join("")
   :`<div class="card empty">${ic("search",32)}<b style="color:var(--ink)">No one on your list yet</b><span>Tap "Who do you miss?" to add your first person.</span></div>`}`;}
@@ -643,6 +665,13 @@ function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
       <span class="meta">${ic("pin",14)}Knew you at ${where(p)}, ${hasYears(p)?"around "+esc(years(p)):"(no years given)"}</span>
       <span class="meta">Listed you as "${esc(p.name)}"</span></div>
     <p class="fine">Saying yes shares your photo with them so they can confirm it's you. ${KITW} doesn't check anyone's identity, so only say yes if you want to hear from this person.</p>
+    ${(()=>{const k=p.id+"|"+u.id,t=qThread(k),mine=t.filter(m=>m.from===u.id).length,waiting=t.length&&t[t.length-1].from===u.id;
+      let q=qaView(k,u.id);
+      if(waiting)q+=`<p class="fine">${ic("chat",14)} Waiting for their answer. You can still decide any time.</p>`;
+      else if(mine<Q_MAX)q+=(S.qOpen===k||t.length)?qaInput(k,"qAsk",t.length?"Ask one more question…":"Ask something only they would know…")+`<p class="fine">Not sure yet? Ask something only they'd know, that wouldn't be on Facebook or LinkedIn. A right answer helps, but it isn't proof. They won't see your name or photo, only that you haven't decided. ${Q_MAX-mine} question${Q_MAX-mine===1?"":"s"} left.</p>`
+        :`<button class="link inline" style="align-self:center" data-act="qOpen" data-k="${esc(k)}">${ic("chat",14)} Not sure? Ask them a question first</button>`;
+      else q+=`<p class="fine">You've used your questions. Time to decide.</p>`;
+      return q;})()}
     ${hasPhoto(u)?`<div class="btns"><button class="primary" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="accepted">Yes, I know them</button><button class="grey" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="ignored">Not now</button></div>`
       :`${photoNotice("Add a profile photo first, so they can check it's really you.","Add photo")}<div class="btns"><button class="grey" data-act="decide" data-k="${esc(p.id)}|${esc(u.id)}" data-v="ignored">Not now</button></div>`}
     <div class="toggle"><p class="fine">Only you can see this. They're never told if you choose Not now or Block.</p><button class="link warn" data-act="block" data-id="${esc(o.id)}">Block</button></div></article>`;}).join("");
@@ -656,8 +685,38 @@ const CHECKS=[
 const detect=t=>CHECKS.filter(([,,re])=>re.test(t));
 const listWords=a=>a.length<2?a[0]:a.slice(0,-1).join(", ")+" and "+a[a.length-1];
 
+function purgeGone(){const gu=new Set(S.gone.users),gp=new Set(S.gone.picks);
+  for(const id of gu)delete S.users[id];
+  for(const p of S.picks)if(gu.has(p.owner)&&!gp.has(p.id)){gp.add(p.id);S.gone.picks.push(p.id);}
+  S.picks=S.picks.filter(p=>!gp.has(p.id));
+  const pickGone=k=>{const [pid,uid]=k.split("|");return gp.has(pid)||gu.has(uid);};
+  const pairGone=k=>k.split("~").some(x=>gu.has(x));
+  for(const m of [S.decisions,S.confirms])for(const k in m)if(pickGone(k))delete m[k];
+  for(const k in S.messages)if(k.startsWith("q:")?pickGone(k.slice(2)):pairGone(k))delete S.messages[k];
+  for(const m of [S.disconnected||{},S.msgDraft||{},S.tipOff||{}])for(const k in m)if(pairGone(k))delete m[k];
+  for(const k in S.removedAt||{})if(S.removedAt[k]&&gu.has(S.removedAt[k].owner))delete S.removedAt[k];
+  for(const m of [S.seen||{},S.splashed||{}])for(const k in m){if(gu.has(k))delete m[k];else m[k]=(m[k]||[]).filter(x=>!pairGone(x));}
+  for(const u of Object.values(S.users))u.blocked=(u.blocked||[]).filter(x=>!gu.has(x));
+  S.reports=(S.reports||[]).filter(r=>!gu.has(r.by));}
+function deleteProfile(id){if(!S.gone.users.includes(id))S.gone.users.push(id);purgeGone();
+  S.confirmDelMe=false;S.savedMe=S.savedNever=false;S.tab="me";
+  const left=Object.keys(S.users);
+  if(left.length)S.current=left[0];
+  else{const nid="u_"+Date.now().toString(36);S.users[nid]={id:nid,name:"",past:[],history:[{place:"",city:"",from:"",to:""}],joined:false,paused:false,never:[],blocked:[],photo:"",hue:Math.floor(Math.random()*360)};S.current=nid;}
+  S.flash="That profile has been deleted.";}
+function splash(c){const o=S.users[c.other];const F=firstName(o)||"them";
+  return `<div class="splash" role="dialog" aria-modal="true" aria-label="Connected with ${esc(F)}"><div class="splash-card">
+    <div class="splash-pair">${av(me(),88)}<span class="splash-link">${ic("check",26)}</span>${av(o,88)}</div>
+    <p class="splash-kick">You're reconnected</p>
+    <h2 class="splash-title">Connected with ${esc(F)}</h2>
+    <p class="post-text">${c.place?`From ${esc(c.place)}. `:""}You can now see ${esc(F)}'s profile and send messages. Take your time, and say hello when you're ready.</p>
+    <div class="btns center"><button class="primary" data-act="splashGo" data-pk="${esc(c.pk)}">${ic("chat",18)}Say hello</button><button class="grey" data-act="splashClose" data-pk="${esc(c.pk)}">Later</button></div>
+  </div></div>`;}
 function connections(){const u=me();const cs=connectionsOf(u.id);S.seen=S.seen||{};const seenBefore=S.seen[u.id]||[];S.seen[u.id]=cs.map(c=>c.pk);save();
-  const flash=S.flash?`<div class="notice">${ic("check",18)}<span>${esc(S.flash)}</span></div>`:"";
+  let flash=S.flash?`<div class="notice">${ic("check",18)}<span>${esc(S.flash)}</span></div>`:"";
+  const seenIds=new Set();flash+=awaitingConfirm(u.id).filter(p=>!seenIds.has(p.owner)&&seenIds.add(p.owner)).map(p=>{const o=S.users[p.owner],F=firstName(o)||"them";
+    return `<article class="card"><div class="post-head">${av(o,44)}<div class="who"><b>${esc(o.name)}</b><span class="meta">${ic("pin",14)}${where(p)}</span></div><span class="status s-check">Almost there</span></div>
+    <p class="post-text">You said yes. Now ${esc(F)} just needs to check your photo and confirm it's really you. As soon as they do, you'll be connected and can message each other here.</p></article>`;}).join("");
   if(!cs.length)return flash+`<div class="card empty">${ic("chat",32)}<b style="color:var(--ink)">No reconnections yet</b><span>They'll appear here once both of you say yes.</span></div>`;
   const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>${KITW} is for the first hello</b>
     <span>Use these messages to reintroduce yourselves and make sure it's really them. ${KITW} isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
@@ -691,37 +750,41 @@ function connections(){const u=me();const cs=connectionsOf(u.id);S.seen=S.seen||
     ${panel?"":`<div class="conn-actions"><button class="link" data-act="connPanel" data-kind="disconnect" data-pk="${esc(c.pk)}">Disconnect</button><button class="link" data-act="connPanel" data-kind="block" data-pk="${esc(c.pk)}">Block</button><button class="link warn" data-act="connPanel" data-kind="report" data-pk="${esc(c.pk)}">Report</button></div>`}</article>`;}).join("");}
 
 function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
-  return `<section class="card profile"><div class="cover"><svg class="net" viewBox="0 0 680 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g style="stroke:var(--brass)" stroke-width="3" stroke-linecap="round"><line x1="340.0" y1="79.0" x2="340" y2="36"/><line x1="375.3" y1="88.4" x2="402" y2="42"/><line x1="398.0" y1="109.1" x2="462" y2="64"/><line x1="409.0" y1="133.4" x2="506" y2="110"/><line x1="304.7" y1="88.4" x2="278" y2="42"/><line x1="282.0" y1="109.1" x2="218" y2="64"/><line x1="271.0" y1="133.4" x2="174" y2="110"/></g><g style="fill:var(--cover);stroke:var(--brass)" stroke-width="4"><circle cx="340" cy="36" r="8.5"/><circle cx="402" cy="42" r="8.5"/><circle cx="462" cy="64" r="8.5"/><circle cx="506" cy="110" r="8.5"/><circle cx="278" cy="42" r="8.5"/><circle cx="218" cy="64" r="8.5"/><circle cx="174" cy="110" r="8.5"/></g></svg></div>
+  return `${S.flash?`<div class="notice">${ic("check",18)}<span>${esc(S.flash)}</span></div>`:""}<section class="card profile"><div class="cover"><svg class="net" viewBox="0 0 680 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g style="stroke:var(--brass)" stroke-width="3" stroke-linecap="round"><line x1="340.0" y1="79.0" x2="340" y2="36"/><line x1="375.3" y1="88.4" x2="402" y2="42"/><line x1="398.0" y1="109.1" x2="462" y2="64"/><line x1="409.0" y1="133.4" x2="506" y2="110"/><line x1="304.7" y1="88.4" x2="278" y2="42"/><line x1="282.0" y1="109.1" x2="218" y2="64"/><line x1="271.0" y1="133.4" x2="174" y2="110"/></g><g style="fill:var(--cover);stroke:var(--brass)" stroke-width="4"><circle cx="340" cy="36" r="8.5"/><circle cx="402" cy="42" r="8.5"/><circle cx="462" cy="64" r="8.5"/><circle cx="506" cy="110" r="8.5"/><circle cx="278" cy="42" r="8.5"/><circle cx="218" cy="64" r="8.5"/><circle cx="174" cy="110" r="8.5"/></g></svg></div>
     <div class="prof-main">
       <div class="prof-av">${av(u,132)}<label class="cam" for="me_photo" aria-label="Choose a photo">${ic("camera",18)}</label><input id="me_photo" type="file" accept="image/*" hidden></div>
       <h1 class="prof-name">${esc(u.name||"New person")}</h1>
       ${past.length?`<p class="fine">Also known as ${esc(past.join(", "))}</p>`:""}
       <div class="btns center"><label class="primary" for="me_photo">${ic("camera",16)}${hasPhoto(u)?"Change photo":"Add photo"}</label>${u.photo?`<button class="grey" data-act="clearPhoto">Remove photo</button>`:""}</div>
-      <p class="fine">${hasPhoto(u)?"Your photo is shown to the person you send a request to, and to people you connect with.":"A clear photo of your face is required before you can send or accept requests."}</p>
+      <div class="notice face-tip">${ic("camera",18)}<div class="col-tight"><b>Show your face so they know it's you</b>
+        <span>Use a clear photo of just you, with your face easy to see. It can be from today or from back then, whichever they'd recognize. It's the only way someone from your past can tell it's really you. A cartoon, pet, logo, sunset, group shot or sunglasses means nobody will recognize you, and they'll probably say no.</span></div></div>
+      <p class="fine">${hasPhoto(u)?"Your photo is shown to the person you send a request to, and to people you connect with.":"A photo of your face is required before you can send or accept requests."}</p>
     </div></section>
 
   ${galleryCard(u)}
 
   <div class="card"><h2 class="ct">About you</h2>
     <label class="f" for="me_name">Full name<input id="me_name" value="${esc(u.name)}" placeholder="First and last name"></label>
+    ${u.name&&!parts(u.name).last?`<p class="err">${ic("shield",14)} Add your last name. People search for first and last names, so without it nobody can find you.</p>`:""}
     <label class="f" for="me_past">Past names and nicknames<input id="me_past" value="${esc(past.join(", "))}" placeholder="Maiden name, nickname, old spelling"></label>
     <p class="fine">Separate with commas. A last name on its own works too.</p>
     <fieldset class="bday"><legend>Birth date</legend>
       <select id="me_bm" aria-label="Birth month">${["Month","January","February","March","April","May","June","July","August","September","October","November","December"].map((m,i)=>`<option value="${i?String(i).padStart(2,"0"):""}"${(u.bm||"")===(i?String(i).padStart(2,"0"):"")?" selected":""}>${m}</option>`).join("")}</select>
       <select id="me_bd" aria-label="Birth day"><option value="">Day</option>${Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0")).map(d=>`<option value="${d}"${u.bd===d?" selected":""}>${+d}</option>`).join("")}</select>
-      <input id="me_by" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="bday-year" placeholder="Year" aria-label="Birth year" value="${esc(u.by||"")}">
+      <input id="me_by" class="yr" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="bday-year" placeholder="Year" aria-label="Birth year" value="${esc(u.by||"")}">
     </fieldset>
     <div class="grid2">
       <label class="f" for="me_gender">Gender<select id="me_gender">${[["","Choose…"],["man","Male"],["woman","Female"],["none","Prefer not to say"]].map(([v,l])=>`<option value="${v}"${(u.gender||"")===v?" selected":""}>${l}</option>`).join("")}</select></label><span></span></div>
     ${isMinor(u)?`<p class="err">${ic("lock",14)} You must be 18 or older to use ${KITW}. Your profile is hidden and your list won't be sent.</p>`:""}
-    <p class="fine">${ic("lock",14)} Your birth date and gender are private. They're only used to confirm you're 18 or older and are never shown to anyone.</p></div>
+    <p class="fine">${ic("lock",14)} Your birth date and gender are private. They're only used to confirm you're 18 or older and are never shown to anyone.</p>
+    <div class="hist-actions"><span class="saved-note" id="me_saved"${S.savedMe?"":" hidden"}>${ic("check",16)}Saved</span><span class="fine" id="me_dirty" hidden>Unsaved changes</span><button class="save-btn" data-act="saveMe" id="me_save" disabled>Save</button></div></div>
 
   <div class="card"><h2 class="ct">Where people knew you</h2>
     <div class="hist">${(u.history||[]).map((h,i)=>`<div class="hist-row"><p class="hist-num">Place ${i+1}</p>
       <label class="f" for="h_place_${i}">Place and details<input id="h_place_${i}" data-h="${i}" data-f="place" value="${esc(h.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(h.place)}" id="kw_h_${i}" aria-live="polite">${kwLeft(h.place)}</span></label>
       <label class="f hc" for="h_city_${i}">City or town<input id="h_city_${i}" data-h="${i}" data-f="city" value="${esc(h.city)}" placeholder="e.g. Toronto"></label>
-      <label class="f" for="h_from_${i}">From (optional)<input id="h_from_${i}" data-h="${i}" data-f="from" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.from)}"></label>
-      <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" type="number" inputmode="numeric" placeholder="Year" value="${esc(h.to)}"></label>
+      <label class="f" for="h_from_${i}">From (optional)<input id="h_from_${i}" data-h="${i}" data-f="from" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Year" value="${esc(h.from)}"></label>
+      <label class="f" for="h_to_${i}">To<input id="h_to_${i}" data-h="${i}" data-f="to" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="Year" value="${esc(h.to)}"></label>
       <select class="era" id="h_era_${i}" data-era="${i}" aria-label="Pick roughly when for place ${i+1}">${eraOptions()}</select>
       ${histReady(h)?(hasYears(h)?"":`<p class="fine hist-miss">${ic("pin",14)} Tip: adding years, even roughly, helps the right person find you.</p>`):`<p class="err hist-miss">${ic("pin",14)} Add ${[!String(h.place||"").trim()&&"a place",!String(h.city||"").trim()&&"a city"].filter(Boolean).join(" and ")}. Nobody can find you here until it's filled in.</p>`}
       ${S.confirmHist===i?`<div class="hist-actions"><span class="fine">Delete Place ${i+1}?</span><button class="grey" data-act="cancelDelHist">Cancel</button><button class="del-btn" data-act="delHist" data-i="${i}">Yes, delete</button></div>`
@@ -733,8 +796,16 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
     <div class="toggle"><div><b>Signed up</b><p class="fine">${u.joined?"People who list you with a matching history can send you a request.":"No one can find you."}</p></div><button class="switch" role="switch" aria-checked="${!!u.joined}" aria-label="Signed up" data-act="${u.joined?"leave":"join"}"></button></div>
     <div class="toggle"><div><b>Pause being found</b><p class="fine">Keep your account but stop all new requests.</p></div><button class="switch" role="switch" aria-checked="${!!u.paused}" aria-label="Pause being found" data-act="pause"></button></div>
     <label class="f" for="me_never">Never connect me with<textarea id="me_never" placeholder="One name per line">${esc((u.never||[]).join("\n"))}</textarea></label>
+    <div class="hist-actions"><span class="saved-note" id="nv_saved"${S.savedNever?"":" hidden"}>${ic("check",16)}Saved</span><span class="fine" id="nv_dirty" hidden>Unsaved changes</span><button class="save-btn" data-act="saveNever" id="nv_save" disabled>Save</button></div>
     <p class="fine">Anyone with a similar name is quietly kept away from you. They're never told.</p>
     ${(u.blocked||[]).length?`<b>Blocked</b>`+u.blocked.map(id=>S.users[id]?`<div class="toggle"><span>${esc(S.users[id].name)}</span><button class="link" data-act="unblock" data-id="${esc(id)}">Unblock</button></div>`:"").join(""):""}</div>
+
+  <div class="card"><h2 class="ct">Delete my profile</h2>
+    ${S.confirmDelMe?`<div class="notice danger">${ic("trash",18)}<div class="col-tight"><b>Delete your profile for good?</b>
+      <span>Your name, photos, places, your list, requests and messages are all erased, and no one can find or message you again. This can't be undone.</span>
+      <div class="hist-actions"><button class="grey" data-act="cancelDelMe">Cancel</button><button class="del-btn" data-act="deleteMe">Yes, delete</button></div></div></div>`
+    :`<p class="fine">Permanently erase everything about you from ${KITW}. If you just want a break, use Pause being found instead.</p>
+    <div class="hist-actions"><button class="del-btn" data-act="askDelMe">Delete profile</button></div>`}</div>
 
   <div class="card"><h2 class="ct ct-wm">How ${KITW} protects you</h2><ul class="guards">
     ${["No search. You can't look anyone up by name.",
@@ -785,6 +856,7 @@ function act(a,el){const u=me();
     if(!Number.isFinite(f))f=NaN;if(!Number.isFinite(t))t=NaN;if(isNaN(t)&&!isNaN(f))t=f;if(isNaN(f)&&!isNaN(t))f=t;if(f>t)[f,t]=[t,f];const noYears=isNaN(f);
     const locked=lockedSlots(u.id);
     if(!parts(name).first)S.err="Add the name you knew them by.";
+    else if(!parts(name).last)S.err="Add their last name too, the one you knew them by (like a maiden name). It keeps your request going to the right person.";
     else if(!place)S.err="Add where you knew them. It's how we keep names private.";
     else if(place.split(",").filter(x=>x.trim()).length>MAX_KW)S.err=`Use up to ${MAX_KW} names or details for the place, separated by commas.`;
     else if(!city)S.err="Add the city or town. It's the second detail that has to match.";
@@ -800,6 +872,14 @@ function act(a,el){const u=me();
   else if(a==="setPickCity"){const p=S.picks.find(x=>x.id===el.dataset.id),c=val("pc_"+el.dataset.id);if(p&&c)p.city=c;}
   else if(a==="clearCool"){S.coolClear=Date.now();}
   else if(a==="decide"){S.decisions[el.dataset.k]=el.dataset.v;}
+  else if(a==="splashGo"||a==="splashClose"){S.splashed=S.splashed||{};const l=S.splashed[u.id]=S.splashed[u.id]||[];if(!l.includes(el.dataset.pk))l.push(el.dataset.pk);if(a==="splashGo")S.tab="connections";}
+  else if(a==="qOpen"){S.qOpen=el.dataset.k;S.qErr=null;save();render();const i=document.getElementById(qid(el.dataset.k));if(i)i.focus();return;}
+  else if(a==="qAsk"||a==="qReply"){const k=el.dataset.k,inp=document.getElementById(qid(k)),text=(inp&&inp.value||"").trim();S.qErr=null;
+    if(text){const kinds=detect(text).map(c=>c[1]);
+      if(kinds.length){S.qErr={k,msg:"Please take out "+listWords(kinds)+". That can be shared once you're connected."};save();render();const i=document.getElementById(qid(k));if(i){i.value=text;i.focus();}return;}
+      const t=qThread(k),last=t[t.length-1];
+      const ok=a==="qAsk"?(!last||last.from!==u.id)&&t.filter(m=>m.from===u.id).length<Q_MAX:(last&&last.from!==u.id);
+      if(ok)(S.messages[qKey(k)]=S.messages[qKey(k)]||[]).push({from:u.id,text,ts:Date.now()});S.qOpen=null;}}
   else if(a==="confirm"){S.confirms[el.dataset.k]=el.dataset.v;}
   else if(a==="block"){S.connPanel=null;S.flash="Blocked. They won't be told.";if(!u.blocked.includes(el.dataset.id))u.blocked.push(el.dataset.id);}
   else if(a==="unblock"){u.blocked=u.blocked.filter(x=>x!==el.dataset.id);}
@@ -822,6 +902,15 @@ function act(a,el){const u=me();
   else if(a==="askDelHist"){S.confirmHist=+el.dataset.i;S.savedHist=null;save();render();return;}
   else if(a==="cancelDelHist"){S.confirmHist=null;save();render();return;}
   else if(a==="delHist"){u.history.splice(+el.dataset.i,1);S.confirmHist=null;S.savedHist=null;}
+  else if(a==="askDelMe"){S.confirmDelMe=true;}
+  else if(a==="cancelDelMe"){S.confirmDelMe=false;}
+  else if(a==="deleteMe"){deleteProfile(u.id);}
+  else if(a==="saveMe"){const g=id=>{const e=document.getElementById(id);return e?e.value:"";};
+    u.name=g("me_name").trim();u.past=g("me_past").split(",").map(x=>x.trim()).filter(Boolean);
+    u.bm=g("me_bm");u.bd=g("me_bd");u.by=g("me_by").replace(/\D/g,"").slice(0,4);u.gender=g("me_gender");
+    const y=+u.by,ok=u.bm&&u.bd&&y>=1900&&y<=new Date().getFullYear(),dt=ok?new Date(y,+u.bm-1,+u.bd):null;
+    u.birth=dt&&dt.getMonth()===+u.bm-1?`${u.by}-${u.bm}-${u.bd}`:"";S.savedMe=true;}
+  else if(a==="saveNever"){const e=document.getElementById("me_never");u.never=(e?e.value:"").split("\n").map(x=>x.trim()).filter(Boolean);S.savedNever=true;}
   else if(a==="saveHist"){const i=+el.dataset.i,h=u.history[i];if(h){const g=id=>{const e=document.getElementById(id);return e?e.value:"";};
       const num=v=>{const n=parseInt(v,10);return Number.isFinite(n)&&n>=1900&&n<=2100?n:"";};
       h.place=g("h_place_"+i).trim();h.city=g("h_city_"+i).trim();h.from=num(g("h_from_"+i));h.to=num(g("h_to_"+i));}
@@ -857,6 +946,7 @@ function merge(d){
   for(const pk in d.messages||{}){const cur=S.messages[pk]||[];const seen=new Set(cur.map(m=>m.from+"|"+m.ts+"|"+m.text));
     for(const m of d.messages[pk]||[])if(m&&!seen.has(m.from+"|"+m.ts+"|"+m.text))cur.push(m);
     cur.sort((a,b)=>(a.ts||0)-(b.ts||0));S.messages[pk]=cur;}
+  purgeGone();
   if(!S.users[S.current])S.current=Object.keys(S.users)[0];
   S.fresh=false;
   return [nu,np];}
@@ -870,22 +960,18 @@ document.addEventListener("change",e=>{const t=e.target,u=me();
   if(t.id==="imp_file"&&t.files[0]){const r=new FileReader();r.onload=()=>{importText(String(r.result));save();render();};r.readAsText(t.files[0]);return;}
   if(t.id==="np_era"&&t.value){const [a,b]=t.value.split("-");const f1=document.getElementById("np_from"),f2=document.getElementById("np_to");if(f1)f1.value=a;if(f2)f2.value=b;t.value="";return;}
   if(t.dataset&&t.dataset.era!=null&&t.value){const h=me().history[+t.dataset.era];if(h){const [a,b]=t.value.split("-");h.from=+a;h.to=+b;}save();render();schedulePush();return;}
-  if(t.id==="who"){S.current=t.value;S.err="";}
-  else if(t.id==="me_name"){u.name=t.value.trim();}
-  else if(t.id==="me_past"){u.past=t.value.split(",").map(s=>s.trim()).filter(Boolean);}
-  else if(t.id==="me_bm"||t.id==="me_bd"||t.id==="me_by"){
-    if(t.id==="me_bm")u.bm=t.value;else if(t.id==="me_bd")u.bd=t.value;else u.by=t.value.replace(/\D/g,"").slice(0,4);
-    const y=+u.by,ok=u.bm&&u.bd&&y>=1900&&y<=new Date().getFullYear();
-    const dt=ok?new Date(y,+u.bm-1,+u.bd):null;
-    u.birth=dt&&dt.getMonth()===+u.bm-1?`${u.by}-${u.bm}-${u.bd}`:"";}
-  else if(t.id==="me_gender"){u.gender=t.value;}
-  else if(t.id==="me_never"){u.never=t.value.split("\n").map(s=>s.trim()).filter(Boolean);}
+  if(ME_FIELDS.includes(t.id)){markDirty("me");return;}
+  if(t.id==="me_never"){markDirty("nv");return;}
+  if(t.id==="who"){S.current=t.value;S.err="";S.savedMe=S.savedNever=false;}
   else if(t.dataset.h!=null){const h=u.history[+t.dataset.h];h[t.dataset.f]=(t.dataset.f==="place"||t.dataset.f==="city")?t.value.trim():(n=>Number.isFinite(n)&&n>=1900&&n<=2100?n:"")(parseInt(t.value,10));}
   else if(t.id==="me_photo"&&t.files[0]){openCrop(t.files[0]);return;}
   else return;
   /* typing fields save quietly: re-drawing the page here would steal the next tap */
-  const quiet=t.dataset.h!=null||["me_name","me_past","me_never","me_by"].includes(t.id);
+  const quiet=t.dataset.h!=null;
   save();if(!quiet)render();if(t.id!=="who")schedulePush();});
+const ME_FIELDS=["me_name","me_past","me_bm","me_bd","me_by","me_gender"];
+function markDirty(w){const b=document.getElementById(w+"_save"),d=document.getElementById(w+"_dirty"),sv=document.getElementById(w+"_saved");
+  if(b)b.disabled=false;if(d)d.hidden=false;if(sv)sv.hidden=true;if(w==="me")S.savedMe=false;else S.savedNever=false;}
 /* ---------- photo positioner ---------- */
 const V=280; let CR=null;
 const cropEl=document.getElementById("crop"),cropView=document.getElementById("cropView"),cropCv=document.getElementById("cropCanvas"),cropZoom=document.getElementById("cropZoom");
@@ -920,7 +1006,15 @@ cropEl.addEventListener("click",e=>{if(e.target===cropEl)closeCrop();});
 document.addEventListener("keydown",e=>{if(!S.viewing)return;
   if(e.key==="Escape")act("closeView");else if(e.key==="ArrowLeft")act("viewStep",{dataset:{d:"-1"}});else if(e.key==="ArrowRight")act("viewStep",{dataset:{d:"1"}});});
 
+/* year boxes: the number pad types digits even with Num Lock off (otherwise 3 = Page Down, 9 = Page Up, 2/8 = arrows) */
+document.addEventListener("keydown",e=>{const t=e.target;if(!t.classList||!t.classList.contains("yr"))return;
+  const m=/^Numpad(\d)$/.exec(e.code||"");if(!m||/^\d$/.test(e.key)||e.ctrlKey||e.metaKey||e.altKey)return;
+  e.preventDefault();if(t.value.length>=4&&t.selectionStart===t.selectionEnd)return;
+  t.setRangeText(m[1],t.selectionStart,t.selectionEnd,"end");
+  t.dispatchEvent(new Event("input",{bubbles:true}));t.dispatchEvent(new Event("change",{bubbles:true}));});
 document.addEventListener("input",e=>{const t=e.target;let el=null;
+  if(ME_FIELDS.includes(t.id))markDirty("me");else if(t.id==="me_never")markDirty("nv");
+  if(t.classList&&t.classList.contains("yr")){const v=t.value.replace(/\D/g,"").slice(0,4);if(v!==t.value)t.value=v;}
   if(t.id==="np_place")el=document.getElementById("kw_np");
   else if(t.dataset&&t.dataset.f==="place"&&t.dataset.h!=null)el=document.getElementById("kw_h_"+t.dataset.h);
   if(el){el.textContent=kwLeft(t.value);el.className=kwClass(t.value);}});
