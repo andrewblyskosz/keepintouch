@@ -304,7 +304,7 @@ async function syncNow(write){if(!SY.bin||!SY.key||(!write&&syncing))return;sync
 const pull=()=>syncNow(false), push=()=>syncNow(true);
 const schedulePush=()=>{if(!SY.bin||!SY.key)return;clearTimeout(pushTimer);pushTimer=setTimeout(push,1200);};
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")pull();});
-const MAX_PICKS=20, MAX_SPAN=6, COOL=30*864e5;
+const MAX_PICKS=10, MAX_SPAN=6, COOL=30*864e5;
 const hasPhoto=u=>!!(u&&safePhoto(u.photo));
 const lockedSlots=uid=>Object.values(S.removedAt||{}).filter(r=>r&&r.owner===uid&&r.at>(S.coolClear||0)&&Date.now()-r.at<COOL);
 const slotsUsed=uid=>S.picks.filter(p=>p.owner===uid&&!pickDone(p)).length+lockedSlots(uid).length;
@@ -766,7 +766,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
   <div class="card"><h2 class="ct">About you</h2>
     <label class="f" for="me_name">Full name<input id="me_name" value="${esc(u.name)}" placeholder="First and last name"></label>
     ${u.name&&!parts(u.name).last?`<p class="err">${ic("shield",14)} Add your last name. People search for first and last names, so without it nobody can find you.</p>`:""}
-    <label class="f" for="me_past">Past names and nicknames<input id="me_past" value="${esc(past.join(", "))}" placeholder="Maiden name, nickname, old spelling"></label>
+    <label class="f" for="me_past">Maiden name, past names and nicknames<input id="me_past" value="${esc(past.join(", "))}" placeholder="Maiden name, nickname, old spelling"></label>
     <p class="fine">Separate with commas. A last name on its own works too.</p>
     <fieldset class="bday"><legend>Birth date</legend>
       <select id="me_bm" aria-label="Birth month">${["Month","January","February","March","April","May","June","July","August","September","October","November","December"].map((m,i)=>`<option value="${i?String(i).padStart(2,"0"):""}"${(u.bm||"")===(i?String(i).padStart(2,"0"):"")?" selected":""}>${m}</option>`).join("")}</select>
