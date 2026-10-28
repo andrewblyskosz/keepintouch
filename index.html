@@ -324,8 +324,9 @@ function namesOf(u){const cur=parts(u.name);const out=[u.name];(u.past||[]).forE
 function nameMatch(name,u){const a=parts(name);return namesOf(u).some(n=>{const b=parts(n);return firstSim(a.first,b.first)&&(a.last?lastSim(a.last,b.last):true);});}
 const fullSim=(x,y)=>{const a=parts(x),b=parts(y);return firstSim(a.first,b.first)&&lastSim(a.last,b.last);};
 const GENERIC=new Set(["the","of","and","high","school","secondary","collegiate","college","university","public","elementary","ci","ss","hs","academy","institute","inc","ltd","co","company","club","church","street","st","grade","class","team","program","programme","department","dept","campus","office","building","centre","center","store","plant","floor","year","years"]);
-function placeMatch(x,y){const tx=norm(x).split(/\s+/).filter(Boolean),ty=norm(y).split(/\s+/).filter(Boolean);
-  const sx=tx.filter(t=>!GENERIC.has(t)&&t.length>2),sy=ty.filter(t=>!GENERIC.has(t)&&t.length>2);
+const isKey=t=>!GENERIC.has(t)&&t.length>2;
+function placeMatch(x,y,A,B){const tx=norm(x).split(/\s+/).filter(Boolean),ty=norm(y).split(/\s+/).filter(Boolean);
+  const sx=tx.filter(t=>isKey(t)&&(!A||A.has(t))),sy=ty.filter(t=>isKey(t)&&(!B||B.has(t)));
   if(!sx.length||!sy.length){const raw=v=>String(v||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();return !!raw(x)&&raw(x)===raw(y);}
   return sx.some(a=>sy.some(b=>a===b||(Math.min(a.length,b.length)>=5&&lev(a,b)<=1)));}
 const YEAR_SLACK=3;
@@ -333,9 +334,12 @@ const yearsOverlap=(a1,a2,b1,b2)=>a1-YEAR_SLACK<=b2&&b1-YEAR_SLACK<=a2;
 const CITY_ALIAS={toronto:["etobicoke","scarborough","northyork","eastyork","york","gta"]};
 const cityKey=c=>{const n=norm(c).replace(/\b(city|of|the|on|ont|ontario|canada)\b/g," ").replace(/\s+/g,"");for(const [k,v] of Object.entries(CITY_ALIAS))if(n===k||v.includes(n))return k;return n;};
 function cityMatch(a,b){const x=cityKey(a),y=cityKey(b);if(!x||!y)return false;return x===y||(Math.min(x.length,y.length)>=5&&lev(x,y)<=1);}
-const MAX_KW=5;
-const placeParts=p=>String(p||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,MAX_KW);
-const placesMatch=(a,b)=>placeParts(a).some(x=>placeParts(b).some(y=>placeMatch(x,y)));
+const MAX_WORDS=8;
+const placeWords=p=>[...new Set(norm(p).split(/\s+/).filter(t=>t&&isKey(t)))];
+const wordCount=p=>placeWords(p).length;
+const placeParts=p=>String(p||"").split(",").map(x=>x.trim()).filter(Boolean);
+const placesMatch=(a,b)=>{const A=new Set(placeWords(a).slice(0,MAX_WORDS)),B=new Set(placeWords(b).slice(0,MAX_WORDS));
+  return placeParts(a).some(x=>placeParts(b).some(y=>placeMatch(x,y,A,B)));};
 const yr=v=>{const n=parseInt(v,10);return Number.isFinite(n)?n:null;};
 const histReady=h=>!!(h&&String(h.place||"").trim()&&String(h.city||"").trim());
 const hasYears=x=>yr(x&&x.from)!==null||yr(x&&x.to)!==null;
@@ -508,9 +512,9 @@ function strip(u){
 function eraOptions(){let o=`<option value="">Not sure? Pick roughly when…</option>`;
   for(let d=1940;d<=2020;d+=10){const n=`${d}s`;o+=`<optgroup label="${n}"><option value="${d}-${d+3}">Early ${n} (${d}–${d+3})</option><option value="${d+3}-${d+6}">Mid ${n} (${d+3}–${d+6})</option><option value="${d+6}-${d+9}">Late ${n} (${d+6}–${d+9})</option></optgroup>`;}
   return o;}
-function kwLeft(v){const n=String(v||"").split(",").filter(x=>x.trim()).length;const left=MAX_KW-n;
-  return left<0?`Only the first ${MAX_KW} details are used`:left===0?"No details left":left===1?"1 detail left":`${left} details left`;}
-function kwClass(v){return String(v||"").split(",").filter(x=>x.trim()).length>MAX_KW?"kw-left over":"kw-left";}
+function kwLeft(v){const left=MAX_WORDS-wordCount(v);
+  return left<0?`Only the first ${MAX_WORDS} key words are used`:left===0?"No words left":left===1?"1 word left":`${left} words left`;}
+function kwClass(v){return wordCount(v)>MAX_WORDS?"kw-left over":"kw-left";}
 
 function examplePage(){const rows=[
     ["Fern Avenue Public School, Fern","Toronto","1975","1981"],
@@ -528,9 +532,9 @@ function examplePage(){const rows=[
   <p class="fine">These are examples only. Use your own places and years.</p>
   <h2 class="ct">Tips</h2>
   <ul class="guards">
-    <li>${ic("check",18)}<span>Put the main name first, then nicknames or details, separated by commas. Up to ${MAX_KW} per line.</span></li>
+    <li>${ic("check",18)}<span>Put the main name first, then nicknames or details. Commas or spaces both work. Up to ${MAX_WORDS} key words per line.</span></li>
     <li>${ic("check",18)}<span>Use one line per chapter instead of your whole life on one line. The years are what make matches accurate.</span></li>
-    <li>${ic("check",18)}<span>Only one detail has to match. Capitals, accents and extra spaces don't matter.</span></li>
+    <li>${ic("check",18)}<span>Only one key word has to match. Common words like school, college or team don't count. Capitals, accents and extra spaces don't matter.</span></li>
     <li>${ic("check",18)}<span>Only remember one year? Fill in From and leave To empty. Not sure at all? Pick a rough time like "early 1980s", or leave the years blank.</span></li>
     <li>${ic("check",18)}<span>Common words like school, grade, team or program only count next to something more specific.</span></li></ul>
   <button class="primary" data-tab="me" style="align-self:flex-start">Back to my profile</button></div>`;}
@@ -628,7 +632,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id&&!pic
       <label class="f" for="np_name">First and last name you knew them by<input id="np_name" value="${esc(d.name)}" placeholder="e.g. Sarah Bennett" autocomplete="off"></label>
       <div class="grid2"><label class="f" for="np_place">Where you knew them<input id="np_place" value="${esc(d.place)}" placeholder="e.g. Humber College, film program"><span class="${kwClass(d.place)}" id="kw_np" aria-live="polite">${kwLeft(d.place)}</span></label>
         <label class="f" for="np_city">City or town<input id="np_city" value="${esc(d.city)}" placeholder="e.g. Toronto"></label></div>
-      <p class="fine">Add other names or details for the place, separated by commas (up to ${MAX_KW}), like the school's nickname, a campus, a team or a department. Only one has to match. <button class="link inline" data-tab="example">See an example</button></p>
+      <p class="fine">Add other names too, like a nickname, campus or department. Commas or spaces both work. <button class="link inline" data-tab="example">See an example</button></p>
       <div class="grid2"><label class="f" for="np_from">From (optional)<input id="np_from" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" value="${esc(d.from)}" placeholder="Year"></label>
         <label class="f" for="np_to">To (${MAX_SPAN} years max)<input id="np_to" class="yr" type="text" inputmode="numeric" maxlength="4" autocomplete="off" value="${esc(d.to)}" placeholder="Year"></label></div>
       <select id="np_era" aria-label="Pick roughly when">${eraOptions()}</select>
@@ -790,7 +794,7 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
       ${S.confirmHist===i?`<div class="hist-actions"><span class="fine">Delete Place ${i+1}?</span><button class="grey" data-act="cancelDelHist">Cancel</button><button class="del-btn" data-act="delHist" data-i="${i}">Yes, delete</button></div>`
         :`<div class="hist-actions">${S.savedHist===i?`<span class="saved-note">${ic("check",16)}Saved</span>`:""}<button class="save-btn" data-act="saveHist" data-i="${i}">Save</button><button class="del-btn" data-act="askDelHist" data-i="${i}">Delete</button></div>`}</div>`).join("")}</div>
     <button class="grey" data-act="addHist" style="align-self:flex-start">Add a place</button>
-    <p class="fine"><button class="link inline" data-tab="example">See an example</button> · For each place, you can add other names or details separated by commas (up to ${MAX_KW}), like a nickname, campus, team or department. Someone can reach you only if one of their details matches one of yours, and the city matches too (plus the years, when you've both added them).</p></div>
+    <p class="fine"><button class="link inline" data-tab="example">See an example</button> · Add other names too, like a nickname, campus or department. Someone can reach you only if one word matches and the city matches too (plus the years, when you've both added them).</p></div>
 
   <div class="card"><h2 class="ct">Privacy and safety</h2>
     <div class="toggle"><div><b>Signed up</b><p class="fine">${u.joined?"People who list you with a matching history can send you a request.":"No one can find you."}</p></div><button class="switch" role="switch" aria-checked="${!!u.joined}" aria-label="Signed up" data-act="${u.joined?"leave":"join"}"></button></div>
@@ -858,7 +862,7 @@ function act(a,el){const u=me();
     if(!parts(name).first)S.err="Add the name you knew them by.";
     else if(!parts(name).last)S.err="Add their last name too, the one you knew them by (like a maiden name). It keeps your request going to the right person.";
     else if(!place)S.err="Add where you knew them. It's how we keep names private.";
-    else if(place.split(",").filter(x=>x.trim()).length>MAX_KW)S.err=`Use up to ${MAX_KW} names or details for the place, separated by commas.`;
+    else if(wordCount(place)>MAX_WORDS)S.err=`Use up to ${MAX_WORDS} key words for the place.`;
     else if(!city)S.err="Add the city or town. It's the second detail that has to match.";
     else if(!noYears&&(f<1930||t>2026))S.err="Those years don't look right. Use four-digit years like 1985, or leave them blank.";
     else if(!noYears&&t-f>MAX_SPAN)S.err=`Keep it to ${MAX_SPAN} years or less. Pick the years you're most sure of.`;
