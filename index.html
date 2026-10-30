@@ -495,7 +495,7 @@ function render(bg){
   const newCount=(u.joined&&u.agreed)?connectionsOf(u.id).filter(c=>!((S.seen||{})[u.id]||[]).includes(c.pk)).length:0;
   document.getElementById("app").innerHTML=`${strip(u)}
   <header class="bar"><div class="bar-in">
-    <div class="bar-top">${LOGO()}<span class="bar-sub" style="letter-spacing:.14em;font-size:10px;white-space:nowrap;line-height:1.3">PEOPLE FROM BACK THEN</span>
+    <div class="bar-top">${LOGO()}<span class="bar-sub" style="letter-spacing:.14em;font-size:10px;white-space:nowrap;line-height:1.3">A SECOND HELLO</span>
       <button class="bar-me" data-tab="me" aria-label="Your profile">${av(u,38)}</button></div>
     <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}${k==="people"&&qCount?`<span class="badge">${qCount}</span>`:""}${k==="requests"&&reqCount?`<span class="badge">${reqCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
   </div></header>
@@ -556,14 +556,14 @@ function examplePage(){const rows=[
   <button class="primary" data-tab="me" style="align-self:flex-start">Back to my profile</button></div>`;}
 
 function footer(){return `<footer class="foot">
-  <p>${KITW} is a tool for the first hello between people who once knew each other. Staying in touch, and anything that happens after you connect, is your own choice and responsibility.</p>
+  <p>${KITW} is a tool for saying hello again to people you once knew. Staying in touch, and anything that happens after you connect, is your own choice and responsibility.</p>
   <p><button class="link" data-tab="terms">Terms of use</button> · <button class="link" data-tab="terms" data-sec="t-safety">Safety tips</button> · <button class="link" data-tab="terms" data-sec="t-privacy">Privacy</button></p></footer>`;}
 
 function agreeGate(){const u=me();return `<div class="card">
   <h2 class="ct ct-wm">Before you start</h2>
   <ul class="guards">
     <li>${ic("users",18)}<span>${KITW} helps people who already knew each other reconnect. It isn't a dating or meeting service.</span></li>
-    <li>${ic("chat",18)}<span>${KITW} is for the first hello only. Staying in touch afterwards happens outside ${KITW}, in whatever way the two of you choose.</span></li>
+    <li>${ic("chat",18)}<span>${KITW} is just for saying hello again. Staying in touch afterwards happens outside ${KITW}, in whatever way the two of you choose.</span></li>
     <li>${ic("shield",18)}<span>${KITW} doesn't verify identities or run background checks. Matches are based only on what people enter.</span></li>
     <li>${ic("shield",18)}<span>Knowing facts about you isn't proof someone knew you. Details can be found on Facebook, LinkedIn and elsewhere online.</span></li>
     <li>${ic("check",18)}<span>You decide who to connect with. Anything you share, and any contact or meeting after a connection, is your own responsibility.</span></li>
@@ -577,7 +577,7 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   <button class="link" data-tab="people">‹ Back</button>
   <h1 class="prof-name" style="text-align:left">Terms of use and safety</h1>
   <p class="fine">Last updated October 26, 2026 · Test version</p>
-  ${sec("t-what",`What ${KITW} is`,`<p>${KITW} is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. ${KITW} does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>${KITW} is for the first contact only. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside ${KITW}.</p>`)}
+  ${sec("t-what",`What ${KITW} is`,`<p>${KITW} is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. ${KITW} does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>${KITW} is only for making contact again. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside ${KITW}.</p>`)}
   ${sec("t-resp","Your choices are your responsibility",`<ul>
     <li>${KITW} never connects anyone without both people agreeing. You decide whether to send a request or accept one, and only the person you're looking for ever sees your request.</li>
     <li>Any messages, sharing of personal details, calls, meetings or relationships that follow a connection are solely between the people involved, and at their own risk.</li>
@@ -749,7 +749,7 @@ function connections(){const u=me();const cs=connectionsOf(u.id);S.seen=S.seen||
     return `<article class="card"><div class="post-head">${av(o,44)}<div class="who"><b>${esc(o.name)}</b><span class="meta">${ic("pin",14)}${where(p)}</span></div><span class="status s-check">Almost there</span></div>
     <p class="post-text">You said yes. Now ${esc(F)} just needs to check your photo and confirm it's really you. As soon as they do, you'll be connected and can message each other here.</p></article>`;}).join("");
   if(!cs.length)return flash+`<div class="card empty">${ic("chat",32)}<b style="color:var(--ink)">No reconnections yet</b><span>They'll appear here once both of you say yes.</span></div>`;
-  const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>${KITW} is for the first hello</b>
+  const intro=`<div class="card intro">${ic("chat",22)}<div class="col-tight"><b>${KITW} is for saying hello again</b>
     <span>Use these messages to reintroduce yourselves and make sure it's really them. ${KITW} isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
   return flash+intro+cs.map(c=>{const o=S.users[c.other];const th=S.messages[c.pk]||[];const pend=S.pendingSend&&S.pendingSend.pk===c.pk?S.pendingSend:null;
     const panel=S.connPanel&&S.connPanel.pk===c.pk?S.connPanel.kind:"";const F=firstName(o)||"them";
@@ -789,7 +789,7 @@ function aboutTab(){return `<div class="card intro">${ic("info",22)}<div class="
        "Only the person you're looking for sees your request. Nobody else ever sees your list.",
        "The person you're looking for decides. If you both list each other, you're connected right away.",
        "Saying no or blocking is silent. The other person just keeps waiting.",
-       `${KITW} is for the first hello only. You choose if and how to keep in touch afterwards.`,
+       `${KITW} is just for saying hello again. You choose if and how to keep in touch afterwards.`,
        "Your photo is shown to the person you send a request to, and to people you connect with.",
        `Up to ${MAX_GAL} extra photos, seen only by people you've reconnected with.`,
        `Up to ${MAX_PICKS} people per list, and removed names lock their spot for 30 days.`,
@@ -803,8 +803,9 @@ function meTab(){const u=me();const past=(u.past||[]).filter(Boolean);
       <h1 class="prof-name">${esc(u.name||"New person")}</h1>
       ${past.length?`<p class="fine">Also known as ${esc(past.join(", "))}</p>`:""}
       <div class="btns center"><label class="primary" for="me_photo">${ic("camera",16)}${hasPhoto(u)?"Change photo":"Add photo"}</label>${u.photo?`<button class="grey" data-act="clearPhoto">Remove photo</button>`:""}</div>
-      <div class="notice face-tip">${ic("camera",18)}<div class="col-tight"><b>Show your face so they know it's you</b>
-        <span>Use a clear photo of just you, with your face easy to see. It can be from today or from back then, whichever they'd recognize. It's the only way someone from your past can tell it's really you. A cartoon, pet, logo, sunset, group shot or sunglasses means nobody will recognize you, and they'll probably say no.</span></div></div>
+      ${hasPhoto(u)&&!S.photoTip?`<button class="link inline" data-act="photoTip" style="align-self:center">Tips for a good photo</button>`:""}
+      ${hasPhoto(u)&&!S.photoTip?"":`<div class="notice face-tip">${ic("camera",18)}<div class="col-tight"><b>Show your face so they know it's you</b>
+        <span>Use a clear photo of just you, with your face easy to see. It can be from today or from back then, whichever they'd recognize. It's the only way someone from your past can tell it's really you. A cartoon, pet, logo, sunset, group shot or sunglasses means nobody will recognize you, and they'll probably say no.</span>${hasPhoto(u)?`<button class="link" data-act="photoTip">Hide tips</button>`:""}</div></div>`}
       <p class="fine">${hasPhoto(u)?"Your photo is shown to the person you send a request to, and to people you connect with.":"A photo of your face is required before you can send or accept requests."}</p>
     </div></section>
 
@@ -974,6 +975,7 @@ function act(a,el){const u=me();
     S.confirmHist=null;S.savedHist=i;save();render();if(SY.bin&&SY.key)push();
     clearTimeout(window.__savedT);window.__savedT=setTimeout(()=>{if(S.savedHist===i){S.savedHist=null;render();}},2500);return;}
   else if(a==="clearPhoto"){u.photo="";}
+  else if(a==="photoTip"){S.photoTip=!S.photoTip;save();render();return;}
   save();render();if(a!=="reset"&&a!=="toggleShare"&&a!=="copyData")schedulePush();}
 const val=id=>{const e=document.getElementById(id);return e?e.value.trim():"";};
 function importText(raw){let d;
