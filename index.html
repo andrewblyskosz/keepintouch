@@ -285,7 +285,7 @@ const saveSync=()=>{try{localStorage.setItem(SYNC_KEY,JSON.stringify(SY))}catch(
 const onClaude=/claude\.ai|claudeusercontent|claude\.site/.test(location.hostname);
 let syncMsg=SY.bin?"Not synced yet":"Not set up", pushTimer=null, syncing=false;
 const isOurs=d=>!!d&&(d.app==="keep-in-touch"||d.app==="keep-in-my-life");
-const payload=()=>({app:"keep-in-touch",v:1,users:S.users,picks:S.picks,decisions:S.decisions,confirms:S.confirms,messages:S.messages,gone:S.gone,removedAt:S.removedAt||{},coolClear:S.coolClear||0,disconnected:S.disconnected||{},reports:S.reports||[]});
+const payload=()=>({app:"keep-in-touch",v:1,users:S.users,picks:S.picks,decisions:S.decisions,confirms:S.confirms,messages:S.messages,gone:S.gone,removedAt:S.removedAt||{},coolClear:S.coolClear||0,connClear:S.connClear||0,disconnected:S.disconnected||{},reports:S.reports||[]});
 async function binFetch(method,body){
   const url="https://api.jsonbin.io/v3/b/"+encodeURIComponent(SY.bin.trim())+(method==="GET"?"/latest":"");
   const go=hdr=>fetch(url,{method,headers:{"Content-Type":"application/json","X-Bin-Meta":"false",[hdr]:SY.key.trim()},body:body?JSON.stringify(body):undefined});
@@ -514,8 +514,8 @@ function strip(u){
     <select id="who">${Object.values(S.users).map(x=>`<option value="${esc(x.id)}"${x.id===u.id?" selected":""}>${esc(x.name||"New person")}${x.joined?"":" (not signed up)"}</option>`).join("")}</select>
     <button class="strip-btn" data-act="toggleTools" aria-expanded="${!!S.tools}">Tools ${ic("down",16)}</button></div>
   ${SY.bin&&SY.key?`<div class="strip-row" style="justify-content:space-between"><span class="strip-sync">Sync: ${esc(syncMsg)}</span><button class="strip-btn" data-act="syncNow">Sync now</button></div>`:""}
-  ${S.tools?`<div class="strip-row"><button class="strip-btn" data-act="addUser">Add a person</button><button class="strip-btn" data-act="toggleSync">${S.showSync?"Close sync":"Sync setup"}</button><button class="strip-btn" data-act="toggleShare">${S.share?"Close swap":"Swap by text"}</button><button class="strip-btn" data-act="clearCool">Clear 30-day locks</button><button class="strip-btn" data-act="askReset">Reset this phone</button></div>
-  ${S.confirmReset?resetCard():""}
+  ${S.tools?`<div class="strip-row"><button class="strip-btn" data-act="addUser">Add a person</button><button class="strip-btn" data-act="toggleSync">${S.showSync?"Close sync":"Sync setup"}</button><button class="strip-btn" data-act="toggleShare">${S.share?"Close swap":"Swap by text"}</button><button class="strip-btn" data-act="clearCool">Clear 30-day locks</button><button class="strip-btn" data-act="askClearConn">Clear connections</button><button class="strip-btn" data-act="askReset">Reset this phone</button></div>
+  ${S.confirmReset?resetCard():""}${S.confirmClearConn?clearConnCard():""}
   ${!(SY.bin&&SY.key)?`<span class="strip-sync">Sync: ${esc(syncMsg)}</span>`:""}
   ${S.showSync?syncCard():""}${S.share?shareCard():""}
   <details><summary>How to test this together</summary><ol>
@@ -574,7 +574,7 @@ function agreeGate(){const u=me();return `<div class="card">
 
 function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id}"><h2 class="ct">${title}</h2>${body}</section>`;
   return `<div class="card">
-  <button class="link" data-tab="people">‹ Back</button>
+  <button class="link" data-act="termsBack">‹ Back</button>
   <h1 class="prof-name" style="text-align:left">Terms of use and safety</h1>
   <p class="fine">Last updated October 26, 2026 · Test version</p>
   ${sec("t-what",`What ${KITW} is`,`<p>${KITW} is a tool that helps people who knew each other in the past find each other again. It suggests possible matches based only on the names, places, cities and years that people enter themselves. ${KITW} does not check that anyone is who they say they are, and it does not screen, vet or run background checks on anyone.</p><p>${KITW} is only for making contact again. Its messages are meant for reintroducing yourselves, not for keeping in touch. Once you've reconnected, it's up to you both to share whatever contact details you choose and continue outside ${KITW}.</p>`)}
@@ -602,8 +602,15 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
     <li>This test version stores information in your browser and, if sync is turned on, in a shared online file. It is not encrypted, so don't enter anything sensitive.</li>
     <li>You can remove your photos, places and list at any time, or turn off "Signed up" to stop being found.</li></ul>`)}
   ${sec("t-legal","No guarantees",`<p>${KITW} is provided "as is". There's no guarantee that it will find anyone, that matches are accurate, that it will always be available, or that information stays private. To the fullest extent the law allows, ${KITW} and its creator aren't liable for any loss, harm or damages arising from your use of ${KITW} or from contact with other users. These terms are governed by the laws of Ontario, Canada. Questions: [YOUR CONTACT EMAIL].</p>`)}
-  <button class="primary" data-tab="people" style="align-self:flex-start">Done</button></div>`;}
+  <button class="primary" data-act="termsBack" style="align-self:flex-start">Done</button></div>`;}
 
+function clearConnCard(){return `<div class="card" role="alertdialog" aria-labelledby="ccTitle">
+  <h2 class="ct" id="ccTitle">Clear all connections?</h2>
+  <ul class="guards">
+    <li>${ic("trash",18)}<span>Erases every request answer, photo check, question, message and connection, for everyone in this test.</span></li>
+    <li>${ic("check",18)}<span>Keeps all profiles, photos, places and the lists of people you're looking for. Requests come back right away, so you can test connecting again.</span></li>
+    ${SY.bin&&SY.key?`<li>${ic("shield",18)}<span>Clears the other phone too the next time it syncs.</span></li>`:""}</ul>
+  <div class="btns"><button class="primary" data-act="cancelClearConn">Keep them</button><button class="danger-btn" data-act="clearConn">Clear connections</button></div></div>`;}
 function resetCard(){const synced=!!(SY.bin&&SY.key);return `<div class="card" role="alertdialog" aria-labelledby="rsTitle">
   <h2 class="ct" id="rsTitle">Reset this phone?</h2>
   <ul class="guards">
@@ -920,7 +927,11 @@ function act(a,el){const u=me();
   else if(a==="delPick"){const id=el.dataset.id,p=S.picks.find(x=>x.id===id);if(p){S.removedAt=S.removedAt||{};S.removedAt[id]={owner:p.owner,at:Date.now()};}
     S.picks=S.picks.filter(x=>x.id!==id);if(!S.gone.picks.includes(id))S.gone.picks.push(id);S.confirmDel="";}
   else if(a==="setPickCity"){const p=S.picks.find(x=>x.id===el.dataset.id),c=val("pc_"+el.dataset.id);if(p&&c)p.city=c;}
+  else if(a==="termsBack"){S.tab=S.termsFrom||"people";S.err="";save();render();const y=S.termsY||0;requestAnimationFrame(()=>window.scrollTo(0,y));return;}
   else if(a==="clearCool"){S.coolClear=Date.now();}
+  else if(a==="askClearConn"){S.confirmClearConn=true;save();render();return;}
+  else if(a==="cancelClearConn"){S.confirmClearConn=false;save();render();return;}
+  else if(a==="clearConn"){S.connClear=Date.now();S.decisions={};S.confirms={};S.messages={};S.disconnected={};S.seen={};S.splashed={};S.msgDraft={};S.tipOff={};S.pendingSend=null;S.connPanel=null;S.qOpen=null;S.qErr=null;S.confirmClearConn=false;S.flash="Connections cleared. Profiles and lists are kept.";}
   else if(a==="decide"){S.decisions[el.dataset.k]=el.dataset.v;}
   else if(a==="splashGo"||a==="splashClose"){S.splashed=S.splashed||{};const l=S.splashed[u.id]=S.splashed[u.id]||[];if(!l.includes(el.dataset.pk))l.push(el.dataset.pk);if(a==="splashGo")S.tab="connections";}
   else if(a==="qOpen"){S.qOpen=el.dataset.k;S.qErr=null;save();render();const i=document.getElementById(qid(el.dataset.k));if(i)i.focus();return;}
@@ -986,10 +997,12 @@ function importText(raw){let d;
   schedulePush();}
 function merge(d){
   let nu=0,np=0;
+  const rc=+d.connClear||0,lc=+S.connClear||0,skipConn=rc<lc;
+  if(rc>lc){S.decisions={};S.confirms={};S.messages={};S.disconnected={};S.seen={};S.splashed={};S.msgDraft={};S.tipOff={};S.pendingSend=null;S.connPanel=null;S.qOpen=null;S.qErr=null;S.connClear=rc;}
   const g=d.gone||{};
   S.removedAt=S.removedAt||{};for(const k in d.removedAt||{})if(!(k in S.removedAt))S.removedAt[k]=d.removedAt[k];
   S.coolClear=Math.max(S.coolClear||0,+d.coolClear||0);
-  S.disconnected=S.disconnected||{};for(const k in d.disconnected||{})if(!(k in S.disconnected))S.disconnected[k]=d.disconnected[k];
+  S.disconnected=S.disconnected||{};if(!skipConn)for(const k in d.disconnected||{})if(!(k in S.disconnected))S.disconnected[k]=d.disconnected[k];
   S.reports=S.reports||[];const rk=new Set(S.reports.map(r=>r.id));for(const r of d.reports||[])if(r&&r.id&&!rk.has(r.id))S.reports.push(r);
   for(const p of d.picks||[]){const l=p&&S.picks.find(x=>x.id===p.id);if(l&&!l.city&&p.city)l.city=p.city;
     if(l&&(+p.editedAt||0)>(+l.editedAt||0)){l.place=p.place;l.city=p.city;l.from=p.from;l.to=p.to;l.editedAt=p.editedAt;}}
@@ -1001,9 +1014,9 @@ function merge(d){
   const have=new Set(S.picks.map(p=>p.id));
   for(const p of d.picks||[])if(p&&p.id&&!have.has(p.id)&&!S.gone.picks.includes(p.id)&&S.users[p.owner]){S.picks.push(p);np++;}
   S.picks=S.picks.filter(p=>!S.gone.picks.includes(p.id)&&S.users[p.owner]);
-  for(const k in d.decisions||{})if(!(k in S.decisions))S.decisions[k]=d.decisions[k];
-  for(const k in d.confirms||{})if(!(k in S.confirms))S.confirms[k]=d.confirms[k];
-  for(const pk in d.messages||{}){const cur=S.messages[pk]||[];const seen=new Set(cur.map(m=>m.from+"|"+m.ts+"|"+m.text));
+  if(!skipConn)for(const k in d.decisions||{})if(!(k in S.decisions))S.decisions[k]=d.decisions[k];
+  if(!skipConn)for(const k in d.confirms||{})if(!(k in S.confirms))S.confirms[k]=d.confirms[k];
+  if(!skipConn)for(const pk in d.messages||{}){const cur=S.messages[pk]||[];const seen=new Set(cur.map(m=>m.from+"|"+m.ts+"|"+m.text));
     for(const m of d.messages[pk]||[])if(m&&!seen.has(m.from+"|"+m.ts+"|"+m.text))cur.push(m);
     cur.sort((a,b)=>(a.ts||0)-(b.ts||0));S.messages[pk]=cur;}
   purgeGone();
@@ -1012,7 +1025,7 @@ function merge(d){
   return [nu,np];}
 
 document.addEventListener("click",e=>{const t=e.target.closest("[data-act],[data-tab]");if(!t)return;
-  if(t.dataset.tab){S.tab=t.dataset.tab;S.err="";S.flash="";S.connPanel=null;S.pendingSend=null;save();render();const sec=t.dataset.sec&&document.getElementById(t.dataset.sec);if(sec)sec.scrollIntoView();else if(t.dataset.tab==="terms"||t.dataset.tab==="example")window.scrollTo(0,0);return;}
+  if(t.dataset.tab){if(t.dataset.tab==="terms"&&S.tab!=="terms"){S.termsFrom=S.tab;S.termsY=window.scrollY;}S.tab=t.dataset.tab;S.err="";S.flash="";S.connPanel=null;S.pendingSend=null;save();render();const sec=t.dataset.sec&&document.getElementById(t.dataset.sec);if(sec)sec.scrollIntoView();else if(t.dataset.tab==="terms"||t.dataset.tab==="example")window.scrollTo(0,0);return;}
   act(t.dataset.act,t);});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("m_")){const b=e.target.parentElement.querySelector("[data-act=send]");if(b)b.click();}});
 document.addEventListener("change",e=>{const t=e.target,u=me();
