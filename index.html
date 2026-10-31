@@ -5,17 +5,17 @@
 /* Layout: social-feed shell — dark test strip, sticky white top bar with icon tabs, one 680px column of white cards on grey */
 :root{
   --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F0F2F5; --hover:#E4E8EC; --ink:#14202C; --muted:#5A6573; --line:#DCE1E7;
-  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --note:#E3F3E6; --field:#F6F8FA; --field-line:#CBD3DC; --note-line:#9CCFA7; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F;
+  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --note:#E3F3E6; --field:#F6F8FA; --field-line:#CBD3DC; --note-line:#9CCFA7; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F; --req-line:#1E7B3C; --req-glow:rgba(30,123,60,.22); --yes:#1E7B3C;
   --lb-bg:rgba(8,12,11,.97); --lb-ink:#FFFFFF; --lb-muted:#B8C2BF; --strip:#22282A; --strip-ink:#E9EEEC; --strip-muted:#A9B4B0; --strip-line:#465052; --strip-field:#30383A;
   --font:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#1E8A44; --req-glow:rgba(30,138,68,.35); --yes:#22A447;
   --strip:#0A0D0C; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#1E8A44; --req-glow:rgba(30,138,68,.35); --yes:#22A447;
   --strip:#0A0D0C; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;padding-block:0 40px}
@@ -159,6 +159,13 @@ h2{margin:0;font-size:20px;font-weight:700}
 .net{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ct-wm{display:flex;align-items:center;gap:.3em;flex-wrap:wrap}
 .wm-inline{height:1.35em;width:auto;display:inline-block;vertical-align:-.3em;margin:0 .08em}
+.req{box-shadow:0 0 0 2.5px var(--req-line),0 0 18px var(--req-glow)}
+.req .big-photo{position:relative;padding-top:76px}
+.req .burst{position:absolute;left:50%;top:0;width:300px;height:170px;transform:translateX(-50%);pointer-events:none}
+.burst-l line{stroke:var(--brass);stroke-width:3;stroke-linecap:round}
+.burst-s polygon{fill:#FFC531;stroke:#E8A800;stroke-width:1.5;stroke-linejoin:round}
+.req .big-photo .av{position:relative;z-index:1;box-shadow:0 0 0 5px var(--brass)}
+.req .btns .primary{background:var(--yes);color:#FFFFFF}
 .danger-btn{background:var(--warn);color:var(--surface);font-weight:600;padding:9px 14px;border-radius:6px}
 .foot{margin-top:24px;text-align:center;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;padding-inline:8px}
 .foot p{margin:0;max-width:60ch;margin-inline:auto}
@@ -499,7 +506,7 @@ function render(bg){
       <button class="bar-me" data-tab="me" aria-label="Your profile">${av(u,38)}</button></div>
     <nav class="tabs" role="tablist">${tabs.map(([k,l,i])=>`<button role="tab" data-tab="${k}" aria-selected="${S.tab===k}" aria-label="${l}"><span class="ti">${ic(i,24)}${k==="connections"&&newCount?`<span class="badge">${newCount}</span>`:""}${k==="people"&&qCount?`<span class="badge">${qCount}</span>`:""}${k==="requests"&&reqCount?`<span class="badge">${reqCount}</span>`:""}</span><span class="tl">${l}</span></button>`).join("")}</nav>
   </div></header>
-  <main class="main"><div class="col">${body}</div>${footer()}</main>${viewer()}${splashC?splash(splashC):""}`;
+  <main class="main"><div class="col">${body}</div>${footer()}</main>${viewer()}${splashC?splash(splashC):S.yesNote&&S.users[S.yesNote]?yesNote(S.users[S.yesNote]):""}`;
   if(bg){let meDirty=false;
     for(const [id,v] of keep){const el=document.getElementById(id);if(el&&el.value!==v){el.value=v;if(ME_FIELDS.includes(id))meDirty=true;}}
     if(meDirty)markDirty("me");
@@ -514,7 +521,7 @@ function strip(u){
     <select id="who">${Object.values(S.users).map(x=>`<option value="${esc(x.id)}"${x.id===u.id?" selected":""}>${esc(x.name||"New person")}${x.joined?"":" (not signed up)"}</option>`).join("")}</select>
     <button class="strip-btn" data-act="toggleTools" aria-expanded="${!!S.tools}">Tools ${ic("down",16)}</button></div>
   ${SY.bin&&SY.key?`<div class="strip-row" style="justify-content:space-between"><span class="strip-sync">Sync: ${esc(syncMsg)}</span><button class="strip-btn" data-act="syncNow">Sync now</button></div>`:""}
-  ${S.tools?`<div class="strip-row"><button class="strip-btn" data-act="addUser">Add a person</button><button class="strip-btn" data-act="toggleSync">${S.showSync?"Close sync":"Sync setup"}</button><button class="strip-btn" data-act="toggleShare">${S.share?"Close swap":"Swap by text"}</button><button class="strip-btn" data-act="clearCool">Clear 30-day locks</button><button class="strip-btn" data-act="askClearConn">Clear connections</button><button class="strip-btn" data-act="askReset">Reset this phone</button></div>
+  ${S.tools?`<div class="strip-row"><button class="strip-btn" data-act="addUser">Add a person</button><button class="strip-btn" data-act="toggleSync">${S.showSync?"Close sync":"Sync setup"}</button><button class="strip-btn" data-act="toggleShare">${S.share?"Close swap":"Swap by text"}</button><button class="strip-btn" data-act="clearCool">Clear 30-day locks</button><button class="strip-btn" data-act="askClearConn">Clear lists and connections</button><button class="strip-btn" data-act="askReset">Reset this phone</button></div>
   ${S.confirmReset?resetCard():""}${S.confirmClearConn?clearConnCard():""}
   ${!(SY.bin&&SY.key)?`<span class="strip-sync">Sync: ${esc(syncMsg)}</span>`:""}
   ${S.showSync?syncCard():""}${S.share?shareCard():""}
@@ -605,12 +612,12 @@ function termsPage(){const sec=(id,title,body)=>`<section class="terms" id="${id
   <button class="primary" data-act="termsBack" style="align-self:flex-start">Done</button></div>`;}
 
 function clearConnCard(){return `<div class="card" role="alertdialog" aria-labelledby="ccTitle">
-  <h2 class="ct" id="ccTitle">Clear all connections?</h2>
+  <h2 class="ct" id="ccTitle">Clear lists and connections?</h2>
   <ul class="guards">
-    <li>${ic("trash",18)}<span>Erases every request answer, photo check, question, message and connection, for everyone in this test.</span></li>
-    <li>${ic("check",18)}<span>Keeps all profiles, photos, places and the lists of people you're looking for. Requests come back right away, so you can test connecting again.</span></li>
+    <li>${ic("trash",18)}<span>Erases everyone's list of people they're looking for, plus every request, photo check, question, message and connection.</span></li>
+    <li>${ic("check",18)}<span>Keeps all profiles, photos and places. Add people again to test the whole process from the start.</span></li>
     ${SY.bin&&SY.key?`<li>${ic("shield",18)}<span>Clears the other phone too the next time it syncs.</span></li>`:""}</ul>
-  <div class="btns"><button class="primary" data-act="cancelClearConn">Keep them</button><button class="danger-btn" data-act="clearConn">Clear connections</button></div></div>`;}
+  <div class="btns"><button class="primary" data-act="cancelClearConn">Keep them</button><button class="danger-btn" data-act="clearConn">Clear lists and connections</button></div></div>`;}
 function resetCard(){const synced=!!(SY.bin&&SY.key);return `<div class="card" role="alertdialog" aria-labelledby="rsTitle">
   <h2 class="ct" id="rsTitle">Reset this phone?</h2>
   <ul class="guards">
@@ -699,8 +706,8 @@ function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
     <p class="fine">Only connect if you're sure this is the person you knew. Once you're connected, what you share and whether you meet is up to the two of you.</p>
     <div class="btns"><button class="primary" style="flex:1" data-act="confirm" data-k="${esc(p.id)}|${esc(c.id)}" data-v="yes">${ic("check",18)}Yes, that's them</button><button class="grey" style="flex:1" data-act="confirm" data-k="${esc(p.id)}|${esc(c.id)}" data-v="no">No, not them</button></div></article>`;}).join("");
   if(inb.length)h+=`<h2 class="ct" style="padding-inline:4px">Want to reconnect <span style="color:var(--alert)">${inb.length}</span></h2>`+inb.map(p=>{const o=S.users[p.owner];return `<article class="card req">
-    <div class="big-photo">${av(o,120)}<b style="font-size:18px">${esc(o.name)}</b>
-      <span class="meta">${ic("pin",14)}Knew you at ${where(p)}, ${hasYears(p)?"around "+esc(years(p)):"(no years given)"}</span>
+    <div class="big-photo"><svg class="burst" viewBox="0 0 300 170" aria-hidden="true"><g class="burst-l"><line x1="83.7" y1="124.9" x2="35.0" y2="113.7"/><line x1="96.8" y1="97.6" x2="54.6" y2="63.9"/><line x1="120.5" y1="78.7" x2="96.2" y2="28.3"/><line x1="150.0" y1="72.0" x2="150.0" y2="16.0"/><line x1="179.5" y1="78.7" x2="203.8" y2="28.3"/><line x1="203.2" y1="97.6" x2="245.4" y2="63.9"/><line x1="216.3" y1="124.9" x2="265.0" y2="113.7"/></g><g class="burst-s"><polygon points="35.0,103.7 37.6,110.1 44.5,110.7 39.2,115.1 40.8,121.8 35.0,118.2 29.1,121.8 30.7,115.1 25.4,110.7 32.3,110.1"/><polygon points="54.6,53.9 57.3,60.3 64.1,60.8 58.9,65.3 60.5,72.0 54.6,68.4 48.7,72.0 50.3,65.3 45.1,60.8 52.0,60.3"/><polygon points="96.2,18.3 98.8,24.6 105.7,25.2 100.5,29.7 102.1,36.4 96.2,32.8 90.3,36.4 91.9,29.7 86.7,25.2 93.6,24.6"/><polygon points="150.0,6.0 152.6,12.4 159.5,12.9 154.3,17.4 155.9,24.1 150.0,20.5 144.1,24.1 145.7,17.4 140.5,12.9 147.4,12.4"/><polygon points="203.8,18.3 206.4,24.6 213.3,25.2 208.1,29.7 209.7,36.4 203.8,32.8 197.9,36.4 199.5,29.7 194.3,25.2 201.2,24.6"/><polygon points="245.4,53.9 248.0,60.3 254.9,60.8 249.7,65.3 251.3,72.0 245.4,68.4 239.5,72.0 241.1,65.3 235.9,60.8 242.7,60.3"/><polygon points="265.0,103.7 267.7,110.1 274.6,110.7 269.3,115.1 270.9,121.8 265.0,118.2 259.2,121.8 260.8,115.1 255.5,110.7 262.4,110.1"/></g></svg>${av(o,120)}<b style="font-size:18px">${esc(o.name)}</b>
+      <span class="meta" style="font-weight:700;color:var(--ink);font-size:15px;display:block;text-align:center">${ic("pin",14)} Knew you at ${where(p)}, ${hasYears(p)?`<span style="white-space:nowrap">around ${esc(years(p))}</span>`:"(no years given)"}</span>
       <span class="meta">Listed you as "${esc(p.name)}"</span></div>
     <p class="fine">Saying yes shares your photo with them so they can confirm it's you. ${KITW} doesn't check anyone's identity, so only say yes if you want to hear from this person.</p>
     ${(()=>{const k=p.id+"|"+u.id,t=qThread(k),mine=t.filter(m=>m.from===u.id).length,waiting=t.length&&t[t.length-1].from===u.id;
@@ -742,6 +749,14 @@ function deleteProfile(id){if(!S.gone.users.includes(id))S.gone.users.push(id);p
   if(left.length)S.current=left[0];
   else{const nid="u_"+Date.now().toString(36);S.users[nid]={id:nid,name:"",past:[],history:[{place:"",city:"",from:"",to:""}],joined:false,paused:false,never:[],blocked:[],photo:"",hue:Math.floor(Math.random()*360)};S.current=nid;}
   S.flash="That profile has been deleted.";}
+function yesNote(o){const F=firstName(o)||"them";
+  return `<div class="splash" role="dialog" aria-modal="true" aria-label="You know ${esc(F)}"><div class="splash-card">
+    <div class="splash-pair">${av(me(),72)}<span class="splash-link">${ic("check",22)}</span>${av(o,72)}</div>
+    <p class="splash-kick">You said "Yes, I know them"</p>
+    <h2 class="splash-title">Almost there</h2>
+    <p class="post-text">Now ${esc(F)} checks your photo to confirm it's you. Then you're reconnected.</p>
+    <div class="btns center"><button class="primary" data-act="yesGo">Go to Reconnected</button><button class="grey" data-act="yesClose">OK</button></div>
+  </div></div>`;}
 function splash(c){const o=S.users[c.other];const F=firstName(o)||"them";
   return `<div class="splash" role="dialog" aria-modal="true" aria-label="Connected with ${esc(F)}"><div class="splash-card">
     <div class="splash-pair">${av(me(),88)}<span class="splash-link">${ic("check",26)}</span>${av(o,88)}</div>
@@ -931,8 +946,9 @@ function act(a,el){const u=me();
   else if(a==="clearCool"){S.coolClear=Date.now();}
   else if(a==="askClearConn"){S.confirmClearConn=true;save();render();return;}
   else if(a==="cancelClearConn"){S.confirmClearConn=false;save();render();return;}
-  else if(a==="clearConn"){S.connClear=Date.now();S.decisions={};S.confirms={};S.messages={};S.disconnected={};S.seen={};S.splashed={};S.msgDraft={};S.tipOff={};S.pendingSend=null;S.connPanel=null;S.qOpen=null;S.qErr=null;S.confirmClearConn=false;S.flash="Connections cleared. Profiles and lists are kept.";}
-  else if(a==="decide"){S.decisions[el.dataset.k]=el.dataset.v;}
+  else if(a==="clearConn"){S.connClear=Date.now();S.coolClear=Date.now();for(const p of S.picks)if(!S.gone.picks.includes(p.id))S.gone.picks.push(p.id);S.picks=[];S.removedAt={};S.compose=false;S.draft={};S.editPick=null;S.decisions={};S.confirms={};S.messages={};S.disconnected={};S.seen={};S.splashed={};S.msgDraft={};S.tipOff={};S.pendingSend=null;S.connPanel=null;S.qOpen=null;S.qErr=null;S.confirmClearConn=false;S.flash="Lists and connections cleared. Profiles are kept.";S.tab="people";}
+  else if(a==="decide"){S.decisions[el.dataset.k]=el.dataset.v;if(el.dataset.v==="accepted"){const p=S.picks.find(x=>x.id===el.dataset.k.split("|")[0]);if(p)S.yesNote=p.owner;}}
+  else if(a==="yesGo"||a==="yesClose"){S.yesNote=null;if(a==="yesGo"){S.tab="connections";window.scrollTo(0,0);}}
   else if(a==="splashGo"||a==="splashClose"){S.splashed=S.splashed||{};const l=S.splashed[u.id]=S.splashed[u.id]||[];if(!l.includes(el.dataset.pk))l.push(el.dataset.pk);if(a==="splashGo")S.tab="connections";}
   else if(a==="qOpen"){S.qOpen=el.dataset.k;S.qErr=null;save();render();const i=document.getElementById(qid(el.dataset.k));if(i)i.focus();return;}
   else if(a==="qAsk"||a==="qReply"){const k=el.dataset.k,inp=document.getElementById(qid(k)),text=(inp&&inp.value||"").trim();S.qErr=null;
