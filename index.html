@@ -166,6 +166,14 @@ h2{margin:0;font-size:20px;font-weight:700}
 .burst-s polygon{fill:#FFC531;stroke:#E8A800;stroke-width:1.5;stroke-linejoin:round}
 .req .big-photo .av{position:relative;z-index:1;box-shadow:0 0 0 5px var(--brass)}
 .req .btns .primary{background:var(--yes);color:#FFFFFF}
+.pick .post-head{background:#184C7C;border-left:5px solid var(--brass);margin:-12px -16px 0;padding:12px 16px 12px 11px;border-radius:10px 10px 0 0}
+.pick .post-head .who b{color:#FFFFFF;font-size:17px}
+.pick .post-head .who .meta{color:#C3D3E3}
+.pick .post-head .av.ghost{background:rgba(255,255,255,.14);color:#FFFFFF}
+.bubble.q-them{background:linear-gradient(135deg,#22A447,#34D058);color:#0B2915}
+.bubble.q-them b,.bubble.q-them span{color:#0B2915}
+.bubble.q-them span{font-weight:600}
+.pill-input.q-in{box-shadow:inset 0 0 0 1.5px #34D058}
 .danger-btn{background:var(--warn);color:var(--surface);font-weight:600;padding:9px 14px;border-radius:6px}
 .foot{margin-top:24px;text-align:center;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;padding-inline:8px}
 .foot p{margin:0;max-width:60ch;margin-inline:auto}
@@ -384,9 +392,9 @@ const qid=k=>"q_"+k.replace(/[^a-z0-9_]/gi,"_");
 function qPending(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id,t=qThread(k);
   if(t.length&&t[t.length-1].from===c.id&&!S.decisions[k]&&!blockedBetween(S.users[uid],c))out.push({p,c,k});}return out;}
 function qaView(k,viewer){const t=qThread(k);if(!t.length)return "";
-  return `<div class="comments">${t.map(m=>`<div class="cmt"><div class="bubble"><b>${m.from===viewer?"You":"Them"}</b><span>${esc(m.text)}</span></div></div>`).join("")}</div>`;}
+  return `<div class="comments">${t.map(m=>`<div class="cmt"><div class="bubble${m.from===viewer?"":" q-them"}"><b>${m.from===viewer?"You":"Them"}</b><span>${esc(m.text)}</span></div></div>`).join("")}</div>`;}
 function qaInput(k,act,ph){const e=S.qErr&&S.qErr.k===k?`<p class="err">${esc(S.qErr.msg)}</p>`:"";
-  return `${e}<div class="cmt-input"><div class="pill-input"><input id="${qid(k)}" placeholder="${ph}" aria-label="${ph}" maxlength="300"></div><button class="icon-btn" data-act="${act}" data-k="${esc(k)}" aria-label="Send">${ic("send",18)}</button></div>`;}
+  return `${e}<div class="cmt-input"><div class="pill-input q-in"><input id="${qid(k)}" placeholder="${ph}" aria-label="${ph}" maxlength="300"></div><button class="icon-btn" data-act="${act}" data-k="${esc(k)}" aria-label="Send">${ic("send",18)}</button></div>`;}
 function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(!spanOk(p))return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
   const conn=cs.find(c=>connectedWith(p.owner,c.id));if(conn)return{cls:"s-conn",txt:"Connected with "+conn.name};
   if(cs.some(c=>S.decisions[p.id+"|"+c.id]==="accepted"&&!S.confirms[p.id+"|"+c.id]))return{cls:"s-check",txt:"Check a photo"};
@@ -683,7 +691,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id&&!pic
     <div class="divider"></div>
     <div class="compose-foot">${ic("shield",18)}<span>Names alone aren't searchable. The place and city have to match, and the years too if you both add them. ${used} of ${MAX_PICKS} spots used${locked.length?`, ${locked.length} locked until ${unlockDate(locked)}`:""}.</span></div>
   </div>
-  ${mine.length?mine.slice().reverse().map(p=>{const st=pickStatus(p);return `<article class="card">
+  ${mine.length?mine.slice().reverse().map(p=>{const st=pickStatus(p);return `<article class="card pick">
     <div class="post-head">${ghost()}<div class="who"><b>${esc(p.name)}</b><span class="meta">${ic("pin",14)}${where(p)} · ${esc(years(p))}</span></div><span class="status ${st.cls}">${esc(st.txt)}</span></div>
     ${st.txt==="Add a city"?`<div class="inline-fix"><input id="pc_${esc(p.id)}" placeholder="City or town" aria-label="City or town for ${esc(p.name)}"><button class="primary" data-act="setPickCity" data-id="${esc(p.id)}">Save</button></div><p class="fine">A city is now needed so matches are more certain.</p>`:""}
     ${st.txt==="Years too wide"?`<p class="post-text">Year ranges are now limited to ${MAX_SPAN}. Tap Edit to shorten the range.</p>`:""}
