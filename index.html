@@ -5,17 +5,17 @@
 /* Layout: social-feed shell — dark test strip, sticky white top bar with icon tabs, one 680px column of white cards on grey */
 :root{
   --bg:#EEF1F4; --surface:#FFFFFF; --sunk:#F0F2F5; --hover:#E4E8EC; --ink:#14202C; --muted:#5A6573; --line:#DCE1E7;
-  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --note:#E3F3E6; --field:#F6F8FA; --field-line:#CBD3DC; --note-line:#9CCFA7; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F; --req-line:#1E7B3C; --req-glow:rgba(30,123,60,.22); --yes:#1E7B3C;
+  --brand:#184C7C; --brand-ink:#FFFFFF; --brand-soft:#DCE8F3; --brass:#F3991E; --brass-soft:#FDEBD2; --note:#E3F3E6; --field:#F6F8FA; --field-line:#CBD3DC; --note-line:#9CCFA7; --ok:#2E7D32; --danger:#C62828; --cover:#184C7C; --bar-bg:#184C7C; --bar-ink:#FFFFFF; --bar-muted:#C3D3E3; --bar-brand:#FFFFFF; --bar-accent:#F3991E; --bar-hover:rgba(255,255,255,.1); --alert:#D33A3A; --warn:#A5482F; --req-line:#E3A800; --req-glow:rgba(227,168,0,.25); --yes:#F5B800; --yes-ink:#1B1407;
   --lb-bg:rgba(8,12,11,.97); --lb-ink:#FFFFFF; --lb-muted:#B8C2BF; --strip:#22282A; --strip-ink:#E9EEEC; --strip-muted:#A9B4B0; --strip-line:#465052; --strip-field:#30383A;
   --font:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#1E8A44; --req-glow:rgba(30,138,68,.35); --yes:#22A447;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#F5B800; --req-glow:rgba(245,184,0,.32); --yes:#F5B800; --yes-ink:#1B1407;
   --strip:#0A0D0C; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111418; --surface:#1C2127; --sunk:#252B33; --hover:#2D343D; --ink:#E7ECF1; --muted:#A2ADBA; --line:#313943;
-  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#1E8A44; --req-glow:rgba(30,138,68,.35); --yes:#22A447;
+  --brand:#41A2D7; --brand-ink:#08131C; --brand-soft:#16344D; --cover:#2A7BAE; --brass:#F3A43A; --brass-soft:#3A2A12; --note:#173322; --note-line:#2F6B43; --field:#2A323B; --field-line:#3E4955; --alert:#F0625F; --warn:#E58A6F; --req-line:#F5B800; --req-glow:rgba(245,184,0,.32); --yes:#F5B800; --yes-ink:#1B1407;
   --strip:#0A0D0C; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;padding-block:0 40px}
@@ -165,15 +165,23 @@ h2{margin:0;font-size:20px;font-weight:700}
 .burst-l line{stroke:var(--brass);stroke-width:3;stroke-linecap:round}
 .burst-s polygon{fill:#FFC531;stroke:#E8A800;stroke-width:1.5;stroke-linejoin:round}
 .req .big-photo .av{position:relative;z-index:1;box-shadow:0 0 0 5px var(--brass)}
-.req .btns .primary{background:var(--yes);color:#FFFFFF}
+.req .btns .primary{background:var(--yes);color:var(--yes-ink)}
 .pick .post-head{background:#184C7C;border-left:5px solid var(--brass);margin:-12px -16px 0;padding:12px 16px 12px 11px;border-radius:10px 10px 0 0}
 .pick .post-head .who b{color:#FFFFFF;font-size:17px}
 .pick .post-head .who .meta{color:#C3D3E3}
 .pick .post-head .av.ghost{background:rgba(255,255,255,.14);color:#FFFFFF}
-.bubble.q-them{background:linear-gradient(135deg,#22A447,#34D058);color:#0B2915}
-.bubble.q-them b,.bubble.q-them span{color:#0B2915}
+.bubble.q-them{background:linear-gradient(135deg,#F5B800,#FFD54A);color:#1B1407}
+.bubble.q-them b,.bubble.q-them span{color:#1B1407}
 .bubble.q-them span{font-weight:600}
-.pill-input.q-in{box-shadow:inset 0 0 0 1.5px #34D058}
+.pill-input.q-in{box-shadow:inset 0 0 0 1.5px var(--req-line)}
+.bubble.q-mine{background:transparent;box-shadow:inset 0 0 0 2px var(--req-line);color:var(--ink)}
+.req-ok{box-shadow:0 0 0 2.5px var(--req-line),0 0 18px var(--req-glow)}
+.req-ok .big-photo .av{box-shadow:0 0 0 5px var(--brass)}
+.req-ok .btns .primary,.splash .btns .primary{background:var(--yes);color:var(--yes-ink)}
+.cmt.me{flex-direction:row-reverse}
+.cmt.me .bubble-wrap{align-items:flex-end}
+.cmt.me .bubble b{text-align:right}
+.cmt-input.me{flex-direction:row-reverse}
 .danger-btn{background:var(--warn);color:var(--surface);font-weight:600;padding:9px 14px;border-radius:6px}
 .foot{margin-top:24px;text-align:center;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:6px;padding-inline:8px}
 .foot p{margin:0;max-width:60ch;margin-inline:auto}
@@ -392,7 +400,7 @@ const qid=k=>"q_"+k.replace(/[^a-z0-9_]/gi,"_");
 function qPending(uid){const out=[];for(const p of S.picks.filter(p=>p.owner===uid))for(const c of candidates(p)){const k=p.id+"|"+c.id,t=qThread(k);
   if(t.length&&t[t.length-1].from===c.id&&!S.decisions[k]&&!blockedBetween(S.users[uid],c))out.push({p,c,k});}return out;}
 function qaView(k,viewer){const t=qThread(k);if(!t.length)return "";
-  return `<div class="comments">${t.map(m=>`<div class="cmt"><div class="bubble${m.from===viewer?"":" q-them"}"><b>${m.from===viewer?"You":"Them"}</b><span>${esc(m.text)}</span></div></div>`).join("")}</div>`;}
+  return `<div class="comments">${t.map(m=>`<div class="cmt${m.from===viewer?" me":""}"><div class="bubble ${m.from===viewer?"q-mine":"q-them"}"><b>${m.from===viewer?"You":"Them"}</b><span>${esc(m.text)}</span></div></div>`).join("")}</div>`;}
 function qaInput(k,act,ph){const e=S.qErr&&S.qErr.k===k?`<p class="err">${esc(S.qErr.msg)}</p>`:"";
   return `${e}<div class="cmt-input"><div class="pill-input q-in"><input id="${qid(k)}" placeholder="${ph}" aria-label="${ph}" maxlength="300"></div><button class="icon-btn" data-act="${act}" data-k="${esc(k)}" aria-label="Send">${ic("send",18)}</button></div>`;}
 function pickStatus(p){const o=S.users[p.owner];if(!p.city)return{cls:"s-check",txt:"Add a city"};if(!spanOk(p))return{cls:"s-check",txt:"Years too wide"};if(!hasPhoto(o))return{cls:"s-check",txt:"Add your photo to send"};const cs=candidates(p);
@@ -706,7 +714,7 @@ function people(){const u=me();const mine=S.picks.filter(p=>p.owner===u.id&&!pic
 function requests(){const u=me();const inb=inbox(u.id),conf=toConfirm(u.id);
   let h="";
   if(!inb.length&&!conf.length)h+=`<div class="card empty">${ic("bell",32)}<b style="color:var(--ink)">No requests right now</b><span>When someone who shares your history asks to reconnect, it shows up here.</span></div>`;
-  h+=conf.map(({p,c})=>{const e=histEntry(p,c);return `<article class="card glow">
+  h+=conf.map(({p,c})=>{const e=histEntry(p,c);return `<article class="card req-ok">
     <h2 class="ct">Is this them?</h2>
     <p class="post-text">Someone said yes to your request for <b>${esc(p.name)}</b>.</p>
     <div class="big-photo">${av(c,120)}<b style="font-size:18px">${esc(c.name)}</b><span class="meta">${ic("pin",14)}${where(e)} · ${years(e)}</span></div>
@@ -783,17 +791,17 @@ function connections(){const u=me();const cs=connectionsOf(u.id);S.seen=S.seen||
     <span>Use these messages to reintroduce yourselves and make sure it's really them. ${KITW} isn't meant for keeping in touch. When you're both ready, share whatever contact details you're comfortable with and carry on in your own way.</span></div></div>`;
   return flash+intro+cs.map(c=>{const o=S.users[c.other];const th=S.messages[c.pk]||[];const pend=S.pendingSend&&S.pendingSend.pk===c.pk?S.pendingSend:null;
     const panel=S.connPanel&&S.connPanel.pk===c.pk?S.connPanel.kind:"";const F=firstName(o)||"them";
-    return `<article class="card${c.how==="mutual"?" glow":""}">
+    return `<article class="card pick">
     <div class="post-head">${av(o,44)}<div class="who"><b>${esc(o.name)}</b><span class="meta">${c.how==="mutual"?"You picked each other":"Reconnected"}${c.place?" · "+esc(c.place):""}</span></div>${!seenBefore.includes(c.pk)?`<span class="status s-new">New match</span>`:c.how==="mutual"?`<span class="status s-conn">Mutual</span>`:""}</div>
     ${thumbs(o)}
     <div class="divider"></div>
     ${(S.tipOff||{})[c.pk]?"":`<div class="notice tip">${ic("shield",18)}<span>This chat is just for reconnecting. Take your time, and when you're both comfortable, swap the contact details you choose and keep in touch outside ${KITW}. Never send money or gift cards.</span><button class="link" data-act="dismissTip" data-pk="${esc(c.pk)}">Got it</button></div>`}
     ${th.length?`<div class="comments">${th.map(m=>{const a=S.users[m.from]||{name:"Someone",hue:0};const mine=m.from===u.id;const money=!mine&&CHECKS[3][2].test(m.text);
-      return `<div class="cmt">${av(a,32)}<div class="bubble-wrap"><div class="bubble"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div>${money?`<p class="warn-line">${ic("shield",14)}This message mentions money. ${KITW} will never ask you for money, and neither should anyone you reconnect with.</p>`:""}</div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
+      return `<div class="cmt${mine?" me":""}">${av(a,32)}<div class="bubble-wrap"><div class="bubble ${mine?"q-mine":"q-them"}"><b>${esc(a.name)}</b><span>${esc(m.text)}</span></div>${money?`<p class="warn-line">${ic("shield",14)}This message mentions money. ${KITW} will never ask you for money, and neither should anyone you reconnect with.</p>`:""}</div></div>`;}).join("")}</div>`:`<p class="fine">Say hello. It's been a while.</p>`}
     ${pend?`<div class="notice warn">${ic("shield",18)}<div class="col-tight"><b>Before you send</b>
         <span>This message includes ${esc(listWords(pend.kinds))}. ${pend.kinds.includes("money")?"Never send money, gift cards or bank details to anyone you reconnect with, even someone you used to know. ":"Sharing contact details is how you'll stay in touch after ${KITW}, so only send them when you're sure it's the person you knew. "}Once it's sent, it can't be taken back.</span>
         <div class="btns"><button class="primary" data-act="cancelSend" data-pk="${esc(c.pk)}">Edit message</button><button class="grey" data-act="confirmSend" data-pk="${esc(c.pk)}">Send anyway</button></div></div></div>`
-      :`<div class="cmt-input">${av(u,32)}<div class="pill-input"><input id="m_${esc(c.pk)}" value="${esc((S.msgDraft||{})[c.pk]||"")}" placeholder="Write a message…" aria-label="Message ${esc(o.name)}" maxlength="400"><button class="icon-btn" data-act="send" data-pk="${esc(c.pk)}" aria-label="Send">${ic("send",18)}</button></div></div>`}
+      :`<div class="cmt-input me">${av(u,32)}<div class="pill-input"><input id="m_${esc(c.pk)}" value="${esc((S.msgDraft||{})[c.pk]||"")}" placeholder="Write a message…" aria-label="Message ${esc(o.name)}" maxlength="400"><button class="icon-btn" data-act="send" data-pk="${esc(c.pk)}" aria-label="Send">${ic("send",18)}</button></div></div>`}
     ${panel==="disconnect"?`<div class="notice">${ic("x",18)}<div class="col-tight"><b>Disconnect from ${esc(F)}?</b>
         <span>This ends the connection for both of you. The conversation and each other's photos disappear. ${esc(F)} isn't sent a notice, but you'll no longer appear in their Reconnected list. This can't be undone.</span>
         <div class="btns"><button class="primary" data-act="closePanel">Keep connection</button><button class="grey" data-act="disconnect" data-pk="${esc(c.pk)}">Disconnect</button></div></div></div>`:""}
